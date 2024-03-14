@@ -1,9 +1,10 @@
+//Import neccesary modules
 const Sequelize = require('sequelize');
 const { sequelize } = require("../config/connection");
 const bcrypt = require('bcryptjs');
 
 // creating a customer model
-// sequelize creates the table in form of objects then converts them to tables
+//Defining a Sequelize model for the customer
 const Customer = sequelize.define("customer", {
     cusid: {
         type: Sequelize.UUID,
@@ -42,10 +43,12 @@ const Customer = sequelize.define("customer", {
         }
     });
 
+    //Sync the Customer model with the database
 Customer.sync().then((result) => {
     console.log('Customer model synced successfully', result)
 }).catch((err) => {
     console.log('Error syncing Customer model', err);
 });
 
+//Export Customer module
 module.exports = { Customer };

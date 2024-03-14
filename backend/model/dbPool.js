@@ -1,5 +1,5 @@
 const mysql = require('mysql2')
-
+//Create a MySQL connection pool
 const pool = mysql.createPool({
         connectionLimit: 10,
         host: "bnbzojiokmkdz5sxlsls-mysql.services.clever-cloud.com",
@@ -7,7 +7,7 @@ const pool = mysql.createPool({
         user: "uxhytwwevhvdtd8h",
         database: "bnbzojiokmkdz5sxlsls"
     })
-
+//Function to get a connection from the pool
 function getConnection() {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -18,6 +18,7 @@ function getConnection() {
         })
     })
 }
+//Function to run a SQL query with parameterized values
 function runQueryValues(conn, sqlQuery, values) {
     return new Promise((resolve, reject) => {
         conn.query(sqlQuery, values, (err, result) => {

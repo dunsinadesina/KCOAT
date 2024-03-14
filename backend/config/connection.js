@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');  // Add the parentheses here
 const dotenv = require('dotenv');
 dotenv.config();
 
+//Initialize Sequelize with database credentials
 const sequelize = new Sequelize(
     "bnbzojiokmkdz5sxlsls", //database name
     "uxhytwwevhvdtd8h", //username
@@ -18,4 +19,5 @@ const sequelize = new Sequelize(
 //   console.log(err);
 // });
 
+//Export the initalized Sequelize instance
 module.exports = { sequelize };

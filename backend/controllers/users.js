@@ -1,4 +1,6 @@
+//Import necessary modules
 const bcrypt = require('bcryptjs');
+//Set the number of salt rounds for bcrypt
 const bcSaltRounds = bcrypt.genSaltSync(10);
 const { getConnection, runQueryValues, signupSyntax } = require('../model/dbPool')
 async function signup(req, res) {
