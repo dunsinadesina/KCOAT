@@ -1,6 +1,4 @@
-//Import the Sequelize module
 const Sequelize = require('sequelize');
-//Import the Customer model
 const { Customer } = require('../model/customer');
 
 //Define the function to insert new customer

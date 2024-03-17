@@ -1,7 +1,7 @@
-//Import necessary modules
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
-const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool')
+const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
+const { CustomerAuth, Customer } = require('../model/customer');
 //Get the JWT secret from environment variable
 const secret = process.env.JWT_SECRET || "defaultSecret";
 
@@ -10,21 +10,16 @@ const login = async (req, res) => {
     //Extract username and password from the request body
     const { username, userpassword } = req.body;
     try {
-        //Get database connection
-        const connection = await getConnection();
-        //Run a query to retrieve the customer's information
-        const result = await runQueryValues(connection, loginSyntax, [username]);
-
-        if (result.length == 0) {
+        //retrive customer info from the db
+        const customer = await Customer.findOne({ where: { username } });
+        if (!customer) {
             return res.status(404).json({ message: 'Username not found. Do you want to create an account?' });
         }
-        //Retrive the stored hashed password from the database
-        const storedPassword = result[0].userpassword;
         //Compare the provided password with the stored hashed password
-        const passwordMatch = await bcrypt.compare(userpassword, storedPassword);
+        const passwordMatch = await bcrypt.compare(userpassword, customer.password);
         //If passwords match, generate a JWT token and return it
         if (passwordMatch) {
-            const token = jwt.sign({ username }, secret);
+            const token = jwt.sign({ username: customer.username }, secret);
             return res.status(200).json({ message: 'Login successful', token });
         }
         else {

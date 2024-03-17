@@ -31,9 +31,6 @@ function runQueryValues(conn, sqlQuery, values) {
         })
     })
 }
-
-const sql = "insert into product(product_name,unit_price,quantity,total)values(?,?,?,?)";
-
 const signupSyntax = "insert into customer_table(username, userpassword)values(?,?)";
 
 const loginSyntax = "select * from customer_table where username = ?"
@@ -46,4 +43,4 @@ const loginSyntax = "select * from customer_table where username = ?"
 
 
 
-module.exports = { getConnection, runQueryValues, sql, signupSyntax, loginSyntax };
+module.exports = { getConnection, runQueryValues, signupSyntax, loginSyntax };

@@ -1,26 +1,36 @@
-//Import necessary modules
 const bcrypt = require('bcryptjs');
-//Set the number of salts rounds for bcrypt
-const bcSaltRounds = bcrypt.genSaltSync(10);
-const { getConnection, runQueryValues, signupSyntax } = require('../model/dbPool');
-//Define the signup function
-async function signup(req, res) {
-    //Extract credentials from the request body
-    const credentials = {
-        username: req.body.username,
-        userpassword: bcrypt.hashSync(req.body.userpassword, bcSaltRounds) //encrypt password
-    }
-    //Get database connection
-    const connection = await getConnection();
+const { CustomerAuth, Customer } = require('../model/customer');
+const signup = async (req, res) => {
     try {
-        //Run a query to create a new user with the provided credentials
-        const result = await runQueryValues(connection, signupSyntax, [credentials.username, credentials.userpassword])
-        console.log(result);
-        res.status(200).json({ message: "An error occurred while signing up" });
-    }
-    catch (err) {
-        console.log(err)
+        const { email, password, username, address,cusName } = req.body;
+        //validate signup data
+        if (!email || !password || !username || !address || !cusName) {
+            return res.status(400).json({ error: 'Please provide all required fields' });
+        }
+        //to check if customer with same email already exists
+        const existingCustomer = await CustomerAuth.findOne({ where: { email } });
+        if (existingCustomer) {
+            return res.status(400).json({ error: 'Customer with this email already exists' });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //create customer record
+        const newCustomer = await Customer.create({
+            cusName,
+            username,
+            password: hashedPassword,
+            address
+        });
+        
+        //create customer_auths record and assciate it witht the customer record
+        await CustomerAuth.create({
+            email,
+            password: hashedPassword,
+            customerId: newCustomer.cusid
+        });
+        res.status(200).json({ message: 'Customer signed up successfully', customer: newCustomer })
+    } catch (err) {
+        console.log('Error in Sign up : ', err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-//Export the signup function
 module.exports = { signup };
