@@ -1,6 +1,13 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
 
+const OrderStatus = {
+    PENDING: 'pending',
+    PROCESSING: 'processing',
+    SHIPPED: 'shipped',
+    DELIVERED: 'delivered'
+};
+
 //order model
 const Order = sequelize.define('Order', {
     id: {
@@ -9,8 +16,7 @@ const Order = sequelize.define('Order', {
         autoIncrement: true
     },
     customer_id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'customers',
@@ -38,4 +44,4 @@ const Order = sequelize.define('Order', {
     console.log("Order model synchronized with database");
 })();
 
-module.exports = { Order };
+module.exports = { Order, OrderStatus };

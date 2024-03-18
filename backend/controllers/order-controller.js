@@ -98,4 +98,20 @@ const cancelOrder = async (req, res) => {
     }
 }
 
-module.exports = { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder };
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = re.body;
+        const order = await Order.findByPk(orderId);
+        if (!order) {
+            return res.status(400).json({ message: 'Invalid Status' });
+        }
+        order.status = status;
+        await ordersave();
+        res.status(200).json({ message: 'Order Status updated succesfully' });
+    } catch (err) {
+        console.log('Error updating order status: ', err);
+        res.status(500).json({ message: "Faild to update order status" });
+    }
+}
+module.exports = { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus };
