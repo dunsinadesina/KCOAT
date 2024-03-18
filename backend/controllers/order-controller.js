@@ -114,4 +114,19 @@ const updateOrderStatus = async (req, res) => {
         res.status(500).json({ message: "Faild to update order status" });
     }
 }
-module.exports = { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus };
+
+const calcOrderTotal = async (orderId) => {
+    try {
+        const order = await Order.findByPk(orderId);
+        if (!order) throw new Error('No such Order');
+        const subTotal = order.reduce((acc, item) => {
+            return acc + (item.quantity * item.price);
+        }, 0);
+        return subTotal;
+    } catch (err) {
+        console.log('Error while calculating order total: ', err);
+        throw err;
+    }
+}
+
+module.exports = { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus, calcOrderTotal };
