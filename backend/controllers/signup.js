@@ -5,7 +5,7 @@ const signup = async (req, res) => {
         const { email, password, username, address,cusName } = req.body;
         //validate signup data
         if (!email || !password || !username || !address || !cusName) {
-            return res.status(400).json({ error: 'Please provide all required fields' });
+            return res.status(400).json({ error: 'Please provide all required fields', error:error.details });
         }
         //to check if customer with same email already exists
         const existingCustomer = await CustomerAuth.findOne({ where: { email } });
@@ -25,7 +25,8 @@ const signup = async (req, res) => {
         await CustomerAuth.create({
             email,
             password: hashedPassword,
-            customerId: newCustomer.cusid
+            customerId: newCustomer.cusid,
+            username: newCustomer.username
         });
         res.status(200).json({ message: 'Customer signed up successfully', customer: newCustomer })
     } catch (err) {

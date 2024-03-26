@@ -1,50 +1,16 @@
-//Import neccesary modules
-const {Sequelize, Model, DataTypes} = require('sequelize');
+// Import necessary modules
+const { Sequelize, Model, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
 const bcrypt = require('bcryptjs');
+ const { Cart } = require('./cart');
+ const { Order } = require('./orders');
+ const { CustomerAuth } = require('./customerAuth');
 
-class CustomerAuth extends Model {}
-
-CustomerAuth.init ({
-    //tableName: 'customer_auths',
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    username:{
-        type: DataTypes.STRING,
-        allowNull:false,
-        unique: true
-    },
-    customerId: {//foreign key
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-            model: 'customers',
-            key: 'cusid'
-        }
-    }
-}, {
-    sequelize,
-    modelName: 'customer_auths'
-});
-
-// creating a customer model
-const Customer = sequelize.define("customer", {
-    //tableName: 'customers',
+// Creating a customer model
+const Customer = sequelize.define("customers", {
     cusid: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true
     },
@@ -61,49 +27,49 @@ const Customer = sequelize.define("customer", {
         type: Sequelize.TEXT,
         allowNull: false,
     },
+    email:{
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+    },
+    phoneNumber:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true
+    },
     address: {
         type: Sequelize.STRING,
         allowNull: false
     }
 }, {
-    tableName: 'customers'
-},
-    {
-        hooks: {
-            //Hash the password before saving it
-            beforeCreate: async (customer, options) => {
-                try {
-                    if (customer.password) {
-                        const salt = await bcrypt.genSalt(10);
-                        customer.password = await bcrypt.hash(customer.password, salt);
-                    }
-                } catch (error) {
-                    console.log('Error hashing password:', error);
-                    throw new Error('Error hashing password');
+    tableName: 'customers',
+    hooks: {
+        // Hash the password before saving it
+        beforeCreate: async (customer, options) => {
+            try {
+                if (customer.password) {
+                    const salt = await bcrypt.genSalt(10);
+                    customer.password = await bcrypt.hash(customer.password, salt);
                 }
+            } catch (error) {
+                console.log('Error hashing password:', error);
+                throw new Error('Error hashing password');
             }
         }
-    });
+    }
+});
 
-//relationship between both models
+// define associations
 Customer.hasOne(CustomerAuth, { foreignKey: 'customerId' });
-CustomerAuth.belongsTo(Customer, { foreignKey: 'customerId' });
+Customer.hasMany(Order);
+ Customer.hasOne(Cart);
 
-//Sync the Customer model with the database
+// Sync the Customer model with the database
 Customer.sync().then((result) => {
-    console.log('Customer model synced successfully', result)
+    console.log('Customer model synced successfully', result);
 }).catch((err) => {
     console.log('Error syncing Customer model', err);
-}
-);
-// sequelize.close()
-//   .then(() => {
-//     console.log('Database connection closed successfully.');
-//   })
-//   .catch((error) => {
-//     console.error('Error closing database connection:', error);
-//   });
-//Export Customer module
+});
 
-
-module.exports = { Customer, CustomerAuth };
+// Export Customer module
+module.exports = { Customer };

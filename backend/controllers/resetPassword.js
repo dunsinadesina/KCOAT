@@ -1,4 +1,3 @@
-//Import necessary modules
 const bcrypt = require('bcryptjs');
 //Set the number of salts rounds for bcrypt
 const bcSaltRounds = bcrypt.genSaltSync(10);

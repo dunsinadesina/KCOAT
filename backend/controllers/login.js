@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
 const { CustomerAuth, Customer } = require('../model/customer');
+const {User} = require('../model/user')
 //Get the JWT secret from environment variable
 const secret = process.env.JWT_SECRET || "defaultSecret";
 
@@ -19,7 +20,8 @@ const login = async (req, res) => {
         const passwordMatch = await bcrypt.compare(userpassword, customer.password);
         //If passwords match, generate a JWT token and return it
         if (passwordMatch) {
-            const token = jwt.sign({ username: customer.username }, secret);
+            const role = User.role;
+            const token = jwt.sign({ username: customer.username, role }, secret);
             return res.status(200).json({ message: 'Login successful', token });
         }
         else {

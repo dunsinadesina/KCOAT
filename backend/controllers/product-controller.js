@@ -7,7 +7,7 @@ const insertProduct = (req, res) => {
         ProductPrice: req.body.ProductPrice,
         ProductDescription: req.body.ProductDescription,
         ProductCategory: req.body.ProductCategory,
-        ProductImage: req.body.ProductCategory
+        ProductImage: req.body.ProductImage
     };
     //Create new product record using the customer model
     Product.create(productData).then(result => {
@@ -50,7 +50,7 @@ const updateProductById = async (req, res) => {
         ProductPrice: req.body.ProductPrice,
         ProductDescription: req.body.ProductDescription,
         ProductCategory: req.body.ProductCategory,
-        ProductImage: req.body.ProductCategory
+        ProductImage: req.body.ProductImage
         }
     try {
         const product = await Product.findByPk(ProductId);
@@ -66,7 +66,7 @@ const updateProductById = async (req, res) => {
 }
 //function to delete an existing product by its ID
 const deleteProduct = async (req, res) => {
-    const ProductId = req.params.Productid;
+    //const ProductId = req.params.Productid;
     try {
         const product = await Product.findByPk(ProductId);
         if (!product) {
