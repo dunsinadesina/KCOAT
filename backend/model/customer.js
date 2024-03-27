@@ -4,7 +4,6 @@ const { sequelize } = require("../config/connection");
 const bcrypt = require('bcryptjs');
 const { Cart } = require('./cart');
 const { Order } = require('./orders');
-const { CustomerAuth } = require('./customerAuth');
 
 // Creating a customer model
 const Customer = sequelize.define("customers", {

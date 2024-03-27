@@ -26,21 +26,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
  //})
 //Middleware to attach a 'username' property to res.locals
 //app.use(express.json); // for parsing application/json
- app.use(session({
-     secret: '9d8302441d4bda37e215d53829302aaa5a5e6bda66775ac4beca485fb131a678',
-     resave: false,
-     saveUninitialized: true
- }));
+//  app.use(session({
+//      secret: '9d8302441d4bda37e215d53829302aaa5a5e6bda66775ac4beca485fb131a678',
+//      resave: false,
+//      saveUninitialized: true
+//  }));
 
-app.use((req, res, next) => {
-    res.locals.username = req.session.username || '';//retrieve username from session
-    next();
-})
-app.use((req, res, next) => {
-    console.log('Request Method:', req.method);
-    console.log('Username:', res.locals.username);
-    next();
-});
+// app.use((req, res, next) => {
+//     res.locals.username = req.session.username || '';//retrieve username from session
+//     next();
+// })
+// app.use((req, res, next) => {
+//     console.log('Request Method:', req.method);
+//     console.log('Username:', res.locals.username);
+//     next();
+// });
 // sequelize.sync({ alter: true })
 //     .then(() => {
 //         console.log('Session table created successfully');

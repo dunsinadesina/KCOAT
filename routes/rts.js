@@ -41,6 +41,6 @@ router.get('/customer/profile', isCustomer, (req, res) => {
 })
 // router.get('/details', verifyAuth, details)
 router.get('/reset', resetPassword)
-router.post('/signup', signup)
+//router.post('/signup', signup)
 //Export router
 module.exports = { router };
