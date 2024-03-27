@@ -2,9 +2,9 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
 const bcrypt = require('bcryptjs');
- const { Cart } = require('./cart');
- const { Order } = require('./orders');
- const { CustomerAuth } = require('./customerAuth');
+const { Cart } = require('./cart');
+const { Order } = require('./orders');
+const { CustomerAuth } = require('./customerAuth');
 
 // Creating a customer model
 const Customer = sequelize.define("customers", {
@@ -27,13 +27,13 @@ const Customer = sequelize.define("customers", {
         type: Sequelize.TEXT,
         allowNull: false,
     },
-    email:{
+    email: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
     },
-    phoneNumber:{
-        type: DataTypes.INTEGER,
+    phoneNumber: {
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
@@ -60,9 +60,8 @@ const Customer = sequelize.define("customers", {
 });
 
 // define associations
-Customer.hasOne(CustomerAuth, { foreignKey: 'customerId' });
 Customer.hasMany(Order);
- Customer.hasOne(Cart);
+Customer.hasOne(Cart);
 
 // Sync the Customer model with the database
 Customer.sync().then((result) => {
