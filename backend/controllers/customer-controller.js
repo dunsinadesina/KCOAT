@@ -1,8 +1,8 @@
+const { Customer } = require('../model/customer');
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-const { Customer } = require('../model/customer');
+const { CustomerAuth } = require('../model/customerAuth');
 
-// Joi schema for input validation
 const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     email: Joi.string().email().required(),
@@ -12,46 +12,42 @@ const schema = Joi.object({
     address: Joi.string().min(3).max(100).required()
 });
 
-// Function to validate input data
-const validateInput = (data) => {
-    const { error } = schema.validate(data);
-    return error ? error.details[0].message : null;
-};
-
 const insertCus = async (req, res) => {
-    // Validate input data
-    const validationError = validateInput(req.body);
-    if (validationError) {
-        return res.status(400).json({ message: 'Invalid input', error: validationError });
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ message: 'Invalid input in one of the fields', error: error.details });
     }
-
-    const { cusName, username, email, phoneNumber, address, userpassword } = req.body;
+    
+    const cusData = {
+        cusName: req.body.cusName,
+        username: req.body.username,
+        email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        address: req.body.address,
+        password: req.body.userpassword,
+    };
 
     try {
-        // Check if customer with same email already exists
-        const existingCustomer = await Customer.findOne({ where: { email } });
+        const existingCustomer = await CustomerAuth.findOne({ where: { email: req.body.email } });
         if (existingCustomer) {
             return res.status(400).json({ error: 'Customer with this email already exists' });
         }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(userpassword, 10);
-
-        // Create new customer record using the customer model
+        
+        const hashedPassword = await bcrypt.hash(cusData.password, 10);
+        
         const newCustomer = await Customer.create({
-            cusName,
-            username,
-            email,
-            phoneNumber,
-            address,
-            password: hashedPassword
+            cusName: cusData.cusName,
+            username: cusData.username,
+            email: cusData.email,
+            phoneNumber: cusData.phoneNumber,
+            address: cusData.address,
+            password: cusData.password,
         });
-
-        return res.status(201).json({ message: "Customer created successfully", customer: newCustomer });
+        res.status(201).json({ message: "Customer created successfully", customer: newCustomer });
     } catch (err) {
-        console.error('Error creating customer:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.log('Error creating customer:', err);
+        res.status(500).json({ error: 'Server Error' })
     }
-};
+}
 
 module.exports = { insertCus };
