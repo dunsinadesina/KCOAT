@@ -1,9 +1,9 @@
 const { Customer } = require('../model/customer');
 
 const insertCus = async (req, res) => {
-    const { cusName, username, email, phoneNumber, address, userpassword } = req.body;
+    const { cusName, username, email, phoneNumber, address, password } = req.body;
     try {
-        if (!cusName || !username || !email || !phoneNumber || !address || userpassword) {
+        if (!cusName || !username || !email || !phoneNumber || !address || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
 
@@ -20,7 +20,7 @@ const insertCus = async (req, res) => {
             email,
             phoneNumber,
             address,
-            userpassword
+            password
         });
         return res.status(200).json({ message: "Customer created successfully", customer: newCustomer });
     } catch (err) {

@@ -13,11 +13,11 @@ const sequelize = new Sequelize(
     }
 );
 
-sequelize.authenticate().then(() => {
-    console.log("connected");
-}).catch(err => {
-    console.log(err);
-});
+// sequelize.authenticate().then(() => {
+//     console.log("connected");
+// }).catch(err => {
+//     console.log(err);
+// });
 
 //Export the initalized Sequelize instance
 module.exports = { sequelize };
