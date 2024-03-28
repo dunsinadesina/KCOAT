@@ -26,12 +26,12 @@ const insertCus = async (req, res) => {
     };
 
     try {
-        const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
-        if (existingCustomer) {
-            return res.status(400).json({ error: 'Customer with this email already exists' });
-        }
+        // const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
+        // if (existingCustomer) {
+        //     return res.status(400).json({ error: 'Customer with this email already exists' });
+        // }
         
-        const hashedPassword = await bcrypt.hash(cusData.password, 10);
+        //const hashedPassword = await bcrypt.hash(cusData.password, 10);
         
         const newCustomer = await Customer.create({
             cusName: cusData.cusName,
