@@ -13,13 +13,13 @@ const insertCus = async (req, res) => {
             password: req.body.userpassword,
         };
         if (!cusData.cusName || !cusData.username || !cusData.email || !cusData.phoneNumber || !cusData.address || cusData.password) {
-            return res.status(400).json({ message: "Fill all the fields" });
+            return res.status(400).json({ message: "Please fill all the fields" });
         }
 
-        // const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
-        // if (existingCustomer) {
-        //     return res.status(400).json({ error: 'Customer with this email already exists' });
-        // }
+        const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
+        if (existingCustomer) {
+            return res.status(400).json({ error: 'Customer with this email already exists' });
+        }
 
         //const hashedPassword = await bcrypt.hash(cusData.password, 10);
 
