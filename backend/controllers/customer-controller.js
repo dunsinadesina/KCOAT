@@ -14,11 +14,18 @@ const insertCus = async (req, res) => {
 
         //const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newCustomer = await Customer.create(cusData);
-        res.status(201).json({ message: "Customer created successfully", customer: newCustomer });
+        const newCustomer = await Customer.create({
+            cusName,
+            username,
+            email,
+            phoneNumber,
+            address,
+            userpassword
+        });
+        return res.status(200).json({ message: "Customer created successfully", customer: newCustomer });
     } catch (err) {
         console.log('Error creating customer:', err);
-        res.status(500).json({ error: 'Server Error' })
+        return res.status(500).json({ error: 'Error in creating customer' })
     }
 }
 
