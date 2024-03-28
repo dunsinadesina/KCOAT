@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');  // Add the parentheses here
-const dotenv = require('dotenv');
-dotenv.config();
+//const dotenv = require('dotenv');
+//dotenv.config();
 
 //Initialize Sequelize with database credentials
 const sequelize = new Sequelize(

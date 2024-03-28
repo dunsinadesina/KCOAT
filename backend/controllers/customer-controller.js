@@ -1,7 +1,5 @@
 const { Customer } = require('../model/customer');
 const Joi = require('joi');
-const bcrypt = require('bcryptjs');
-const { CustomerAuth } = require('../model/customerAuth');
 
 const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
@@ -28,7 +26,7 @@ const insertCus = async (req, res) => {
     };
 
     try {
-        const existingCustomer = await CustomerAuth.findOne({ where: { email: req.body.email } });
+        const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
         if (existingCustomer) {
             return res.status(400).json({ error: 'Customer with this email already exists' });
         }
