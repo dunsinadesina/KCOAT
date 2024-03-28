@@ -15,7 +15,7 @@ const { addToCart, checkOut, retrieveCart, cleanUpOldCarts } = require('../backe
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)
-router.get('/register', insertCus)
+router.post('/register', insertCus)
 router.post('/createproduct', insertProduct)
 router.get('/products', getAllProducts, productSearch)
 router.get('/products/:Productid', getProductById)
