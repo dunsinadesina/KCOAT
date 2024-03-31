@@ -17,11 +17,6 @@ const Customer = sequelize.define("customers", {
         type: Sequelize.STRING,
         allowNull: false
     },
-    username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-    },
     password: {
         type: Sequelize.TEXT,
         allowNull: false,
@@ -30,16 +25,8 @@ const Customer = sequelize.define("customers", {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
-    },
-    phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    address: {
-        type: Sequelize.STRING,
-        allowNull: false
     }
+
 }, {
     tableName: 'customers',
     hooks: {
