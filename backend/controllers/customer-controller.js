@@ -3,7 +3,7 @@ const { Customer } = require('../model/customer');
 const insertCus = async (req, res) => {
     const { cusName, email, password } = req.body;
     try {
-        if (!cusName || !email ||  || !password) {
+        if (!cusName || !email || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
 
