@@ -5,17 +5,17 @@ const { CustomerAuth, Customer } = require('../model/customer');
 const {User} = require('../model/user')
 const secret = process.env.JWT_SECRET || "defaultSecret";
 const login = async (req, res) => {
-    const { username, userpassword } = req.body;
+    const { email, userpassword } = req.body;
     try {
-        const customer = await Customer.findOne({ where: { username } });
+        const customer = await Customer.findOne({ where: { email } });
         if (!customer) {
-            return res.status(404).json({ message: 'Username not found. Do you want to create an account?' });
+            return res.status(404).json({ message: 'email not found. Do you want to create an account?' });
         }
         //Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(userpassword, customer.password);
         if (passwordMatch) {
             const role = User.role;
-            const token = jwt.sign({ username: customer.username, role }, secret);
+            const token = jwt.sign({ email: customer.email, role }, secret);
             return res.status(200).json({ message: 'Login successful', token });
         }
         else {
