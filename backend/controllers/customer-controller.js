@@ -1,9 +1,9 @@
 const { Customer } = require('../model/customer');
 
 const insertCus = async (req, res) => {
-    const { cusName, username, email, phoneNumber, address, password } = req.body;
+    const { cusName, email, password } = req.body;
     try {
-        if (!cusName || !username || !email || !phoneNumber || !address || !password) {
+        if (!cusName || !email ||  || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
 
@@ -16,10 +16,7 @@ const insertCus = async (req, res) => {
 
         const newCustomer = await Customer.create({
             cusName,
-            username,
             email,
-            phoneNumber,
-            address,
             password
         });
         return res.status(200).json({ message: "Customer created successfully", customer: newCustomer });
