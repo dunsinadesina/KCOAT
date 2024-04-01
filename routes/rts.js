@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 //Import middleware and controllers
-const { mid } = require('../backend/middleware/mwd')
-const { isAdmin, isCustomer } = require('../backend/middleware/auth')
-const { signup } = require('../backend/controllers/signup')
-const { login } = require('../backend/controllers/login')
+const { mid} = require('../backend/middleware/mwd')
+const { isAdmin, isCustomer, authenticateToken } = require('../backend/middleware/auth')
+const { login, logout } = require('../backend/controllers/login')
 const { home, about, details } = require('../backend/controllers/users')
 const { resetPassword } = require('../backend/controllers/resetPassword')
 const { insertCus } = require('../backend/controllers/customer-controller')
 const { insertProduct, getAllProducts, getProductById, updateProductById, deleteProduct } = require('../backend/controllers/product-controller')
 const { productSearch } = require('../backend/controllers/product-search')
-const { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus, calcOrderTotal,convertCartToOrder } = require('../backend/controllers/order-controller')
+const { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus, calcOrderTotal, convertCartToOrder } = require('../backend/controllers/order-controller')
 const { addToCart, checkOut, retrieveCart, cleanUpOldCarts } = require('../backend/controllers/cart-controller')
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)
+router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/createproduct', insertProduct)
 router.get('/products', getAllProducts, productSearch)
@@ -41,6 +41,4 @@ router.get('/customer/profile', isCustomer, (req, res) => {
 })
 // router.get('/details', verifyAuth, details)
 router.get('/reset', resetPassword)
-//router.post('/signup', signup)
-//Export router
 module.exports = { router };

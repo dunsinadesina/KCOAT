@@ -35,12 +35,12 @@ const signupSyntax = "insert into customer_table(username, userpassword)values(?
 
 const loginSyntax = "select * from customer_table where username = ?"
 
-//const emailLogin = "select * from users where email = ?"
+const emailLogin = "select * from customers where email = ?"
 
 // const updateLogin = "update users set userpassword = ? where username = ?"
 
-//const updateLogin = "update users set userpassword = ? where email = ?"
+const updateLogin = "update customers set password = ? where email = ?"
 
 
 
-module.exports = { getConnection, runQueryValues, signupSyntax, loginSyntax };
+module.exports = { getConnection, runQueryValues, emailLogin, updateLogin };

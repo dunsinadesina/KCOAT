@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
 const { CustomerAuth, Customer } = require('../model/customer');
-const {User} = require('../model/user')
+const { User } = require('../model/user')
 const secret = process.env.JWT_SECRET || "defaultSecret";
+
 const login = async (req, res) => {
     const { email, userpassword } = req.body;
     try {
@@ -27,4 +28,18 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { login };
+//Initialize an empty set to store invalidated tokens
+const tokenBlacklist = new Set();
+
+const logout = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        tokenBlacklist.add(token);
+        return res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        console.log('Error while loging out');
+        return res.status(500).json({ message: 'An error occurred during logout' });
+    }
+}
+
+module.exports = { login, logout };

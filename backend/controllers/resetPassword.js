@@ -1,31 +1,38 @@
 const bcrypt = require('bcryptjs');
-//Set the number of salts rounds for bcrypt
-const bcSaltRounds = bcrypt.genSaltSync(10);
-const { getConnection, runQueryValues, loginSyntax, updateLogin, emailLogin } = require('../model/dbPool')
-//Define the resetPassword function
+const { getConnection, runQueryValues, updateLogin, emailLogin } = require('../model/dbPool')
+
 const resetPassword = async (req, res) => {
-//Extract credentials from the request body
-    const credentials = {
-        // username: req.body.username,
-        email: req.body.email,
-        userpassword: bcrypt.hashSync(req.body.userpassword, bcSaltRounds)
-    }
-    //Get a database connection
-    const connection = await getConnection();
+    const email = req.body.email;
+    const password = req.body.password;
     try {
+        const connection = await getConnection();
         //Run a query to check if the email exists in the database
-        const result1 = await runQueryValues(connection, emailLogin, [credentials.email])
+        const result1 = await runQueryValues(connection, emailLogin, [email])
         //If email exists, update the password
         if (result1.length > 0) {
-            const result = await runQueryValues(connection, updateLogin, [credentials.userpassword, credentials.email])
-            res.status(200).json({ message: "Password has been reset", result })
+            //genenate salt rounds each time before hashing
+            bcrypt.genSalt(10, (error, salt) => {
+                if (error) {
+                    console.log('Error generating salt: ', error);
+                    return res.status(500).json({ message: 'An error occurred while resetting password' })
+                }
+                //hash the password with generated salt
+                bcrypt.hash(password, salt, async (error, hashedPassword) => {
+                    if (error) {
+                        console.log('Error hashing the password: ', error);
+                        return res.status(500).json({ message: 'An error occurred while resetting password' });
+                    }
+                    //update the password in the database
+                    const result = await runQueryValues(connection, updateLogin, [hashedPassword, email]);
+                    res.status(200).json({ message: "The password was successfully updated", result });
+                })
+            });
+        } else {
+            return res.status(403).json({ message: 'Email does not exist. Do you want to create an account?' })
         }
-        else {
-            res.status(403).json({ message: "Username does not exist. Do you want to create an account?" })
-        }
-    }
-    catch (err) {
-        console.log(err)
+    } catch (error) {
+        console.log('Error: ', error);
+        return res.status(500).json({ message: 'An error occurred while resetting password' })
     }
 }
 //Export the resetPassword function
