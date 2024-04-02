@@ -42,6 +42,19 @@ const getProductById = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+//function to get product by category
+const getProductByCategory = async (req, res)=>{
+    const category = req.params.category;
+    try {
+        const products = await Product.findAll({where: {ProductCategory:category}});
+        return res.status(200).json(products);
+    } catch (error) {
+        console.log('Error in retrieving products by category', error);
+        return res.status(500).json({message: 'Internal Server Error'});
+    }
+}
+
 //function to update an existing product by its ID
 const updateProductById = async (req, res) => {
     const ProductId = req.params.Productid;
@@ -80,4 +93,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 //Export modules
-module.exports = { insertProduct, getAllProducts, getProductById, updateProductById, deleteProduct };
+module.exports = { insertProduct, getAllProducts, getProductById, updateProductById, deleteProduct, getProductByCategory };
