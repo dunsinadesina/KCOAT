@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
-const { OrderProduct } = require('./orderProduct');
-
+const { Customer } = require('./customer')
+const { Product } = require('./products')
 // Order model
 const Order = sequelize.define('Order', {
     id: {
@@ -22,23 +22,28 @@ const Order = sequelize.define('Order', {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0.0
-        // },
-        // customerId: {
-        //     type: Sequelize.UUID,
-        //     allowNull: false,
-        //     references: {
-        //         model: 'customers',
-        //         key: 'cusid'
-        //     }
-         }
-    });
-// Define intermediate table OrderProduct
-
+    },
+    customerId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+            model: 'Customers',
+            key: 'cusid'
+        }
+    },
+    productId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'Products',
+            key: 'Productid'
+        }
+    }
+});
 
 // Define associations
-// Order.belongsTo(() => require('./customer').Customer, { foreignKey: 'customerId' });
-// Order.belongsToMany(() => require('./products').Product, { through: OrderProduct });
-// Order.belongsTo(Customer); // Assuming one order belongs to one customer
+Order.belongsTo(Customer, { foreignKey: 'customerId' });
+Order.belongsTo(Product, { foreignKey: 'productId' });
 
 // Sync with db
 (async () => {

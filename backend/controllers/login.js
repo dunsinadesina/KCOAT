@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
-const { CustomerAuth, Customer } = require('../model/customer');
-const { User } = require('../model/user')
+const { Customer } = require('../model/customer');
+//const { User } = require('../model/user')
 const secret = process.env.JWT_SECRET || "defaultSecret";
 
 const login = async (req, res) => {

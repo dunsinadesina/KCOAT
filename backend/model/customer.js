@@ -2,11 +2,10 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
 const bcrypt = require('bcryptjs');
-const { Cart } = require('./cart');
-const { Order } = require('./orders');
 
+class Customer extends Model { }
 // Creating a customer model
-const Customer = sequelize.define("customers", {
+Customer.init({
     cusid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -14,40 +13,38 @@ const Customer = sequelize.define("customers", {
         primaryKey: true
     },
     cusName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     password: {
-        type: Sequelize.TEXT,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     }
-
-}, {
-    tableName: 'customers',
-    hooks: {
-        // Hash the password before saving it
-        beforeCreate: async (customer, options) => {
-            try {
-                if (customer.password) {
-                    const salt = await bcrypt.genSalt(10);
-                    customer.password = await bcrypt.hash(customer.password, salt);
+},
+    {
+        sequelize,
+        modelName: 'Customer',
+        tableName: 'Customers',
+        hooks: {
+            // Hash the password before saving it
+            beforeCreate: async (customer) => {
+                try {
+                    if (customer.password) {
+                        const salt = await bcrypt.genSalt(10);
+                        customer.password = await bcrypt.hash(customer.password, salt);
+                    }
+                } catch (error) {
+                    console.log('Error hashing password:', error);
+                    throw new Error('Error hashing password');
                 }
-            } catch (error) {
-                console.log('Error hashing password:', error);
-                throw new Error('Error hashing password');
             }
         }
-    }
-});
-
-// define associations
-Customer.hasMany(Order);
-Customer.hasOne(Cart);
+    });
 
 // Sync the Customer model with the database
 Customer.sync().then((result) => {

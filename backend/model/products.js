@@ -1,7 +1,7 @@
 const {Sequelize, DataTypes} = require('sequelize');
 const { sequelize } = require("../config/connection");
 
-const Product = sequelize.define("Product", {
+const Product = sequelize.define("Products", {
     Productid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -9,22 +9,30 @@ const Product = sequelize.define("Product", {
         primaryKey: true
     },
     ProductName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     ProductDescription: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     ProductPrice: {
-        type: Sequelize.DECIMAL(10, 2),
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
     ProductCategory: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING
     },
     ProductImage: {
-        type: Sequelize.JSON
+        type: DataTypes.STRING
+    },
+    ProductSize:{
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    SubCategory:{
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 //Sync the Products model with the database

@@ -1,11 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
-// const { Customer } = require('./customer')
+const { Customer } = require('./customer');
+const { Product } = require('./products');
 // const { Order } = require('./orders')
-// const { Product } = require('./products')
+//Creating cart model
 const Cart = sequelize.define('Cart', {
     id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
@@ -14,7 +15,7 @@ const Cart = sequelize.define('Cart', {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         references: {
-            model: 'customers',
+            model: 'Customers',
             key: 'cusid'
         }
     },
@@ -43,13 +44,23 @@ const CartItem = sequelize.define('CartItem', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    cartId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Carts',
+            key: 'id'
+        }
     }
 });
 //define associations
-// Cart.belongsTo(() => require('./customer').Customer, { foreignKey: 'customerId' });
-// Cart.belongsToMany(() => require('./products'.Product, { through: () => require('./cart').CartItem }));
-// Cart.hasMany(() => require('./orders'.Order));
-// Cart.hasMany(() => require('./cart').CartItem);
-// Cart.hasMany(() => require('./customer').Customer);
+Cart.belongsTo(Customer, { foreignKey: 'customerId' });
+Cart.belongsToMany(Product, { through: CartItem });
+CartItem.belongsTo(Product, { foreignKey: 'productId' })
+CartItem.belongsTo(Cart, { foreignKey: 'cartId' })
+
+// Cart.sync();
+// CartItem.sync();
 
 module.exports = { Cart, CartItem };
