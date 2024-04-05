@@ -1,13 +1,11 @@
 // This is your test secret API key.
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { Customer } = require('../model/customer')
-const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);;
-const { createOrder } = require('./order-controller')
+import Stripe from 'stripe';
+import { createOrder } from './order-controller.js';
+const stripe = Stripe(process.env.STRIPE_TEST_KEY);;
 
 const secret = process.env.JWT_SECRET || 'Tech4Dev';
 let endpointSecret;
-const checkoutPayment = async (req, res) => {
+export const checkoutPayment = async (req, res) => {
     try {
         const customer = await stripe.customers.create({
             metadata: {
@@ -102,7 +100,7 @@ const checkoutPayment = async (req, res) => {
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 //endpointSecret = "whsec_4c933b56864bab4df876c587f121c78ebf35421502fef1fb2d1a31ab76292411";
 
-const webHook = (req, res) => {
+export const webHook = (req, res) => {
     const sig = req.headers['stripe-signature'];
     let data;
     let eventType;
@@ -134,4 +132,3 @@ const webHook = (req, res) => {
     }
     res.send().end();
 }
-module.exports = { checkoutPayment, webHook }

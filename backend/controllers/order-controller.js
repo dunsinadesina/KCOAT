@@ -1,10 +1,9 @@
-const { Order, OrderProduct } = require('../model/orders');
-const { Customer } = require('../model/customer');
-const { Product } = require('../model/products');
-const { sendOrderConfirmationMail } = require('../controllers/mail');
+import { Customer } from '../model/customer.js';
+import { Order } from '../model/orders.js';
+import { Product } from '../model/products.js';
 //const e = require('express');
 
-const convertCartToOrder = async (req, res) => {
+export const convertCartToOrder = async (req, res) => {
     try {
         const { customerId } = req.body;
         const customer = await Customer.findByPk(customerId);  //get the logged in user info from session
@@ -25,7 +24,7 @@ const convertCartToOrder = async (req, res) => {
         for (const item of cartItems) {
             const product = await Product.findByPk(item.productId);
             if (!product) {
-                return res.status(404).json({message:`Product with ID ${item.productId} not found`});
+                return res.status(404).json({ message: `Product with ID ${item.productId} not found` });
             }
             await order.addProduct(product, { through: { quantity: item.quantity } });
         }
@@ -37,7 +36,7 @@ const convertCartToOrder = async (req, res) => {
     }
 }
 
-const createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
     try {
         const { customerId, products } = req.body;
         if (!customerId) {
@@ -76,7 +75,7 @@ const createOrder = async (req, res) => {
     }
 };
 
-const viewOrders = async (req, res) => {
+export const viewOrders = async (req, res) => {
     try {
         const { limit = 10, offset = 0, sortBy = 'createdAt', sortOrder = 'DESC', customerid, productid, status } = req.query;
         filter = {};
@@ -109,7 +108,7 @@ const viewOrders = async (req, res) => {
     }
 }
 
-const viewParticularOrder = async (req, res) => {
+export const viewParticularOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
         const order = await Order.findByPk(orderId);
@@ -123,7 +122,7 @@ const viewParticularOrder = async (req, res) => {
     }
 }
 
-const updateOrder = async (req, res) => {
+export const updateOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
         const { quantity, status } = req.body;
@@ -145,7 +144,7 @@ const updateOrder = async (req, res) => {
     }
 };
 
-const cancelOrder = async (req, res) => {
+export const cancelOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
         const order = await Order.findByPk(orderId);
@@ -161,7 +160,7 @@ const cancelOrder = async (req, res) => {
     }
 }
 
-const updateOrderStatus = async (req, res) => {
+export const updateOrderStatus = async (req, res) => {
     try {
         const { orderId } = req.params;
         const { status } = req.body;
@@ -178,13 +177,26 @@ const updateOrderStatus = async (req, res) => {
     }
 }
 
-const calcOrderTotal = async () => {
-    const products = await this.getProducts();
+export const calcOrderTotal = async function () {
     let totalPrice = 0;
-    products.forEach(product => {
-        totalPrice += product.price * this.OrderProduct.quantity;
-    });
-    this.totalPrice = totalPrice;
-};
 
-module.exports = { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus, calcOrderTotal, convertCartToOrder };
+    try {
+        // Fetch products associated with the order
+        const products = await this.getProducts();
+
+        // Calculate total price
+        products.forEach(product => {
+            totalPrice += product.price * this.quantity;
+        });
+
+        this.totalPrice = totalPrice;
+
+        // Save the updated order instance to the database
+        await this.save();
+
+        return this.totalPrice;
+    } catch (error) {
+        console.error('Error calculating order total:', error);
+        throw new Error('Error calculating order total');
+    }
+};

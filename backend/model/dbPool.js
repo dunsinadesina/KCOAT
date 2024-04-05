@@ -1,4 +1,4 @@
-const mysql = require('mysql2')
+import mysql from 'mysql2';
 //Create a MySQL connection pool
 const pool = mysql.createPool({
         connectionLimit: 10,
@@ -8,7 +8,7 @@ const pool = mysql.createPool({
         database: "bnbzojiokmkdz5sxlsls"
     })
 //Function to get a connection from the pool
-function getConnection() {
+export function getConnection() {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) { reject(err) }
@@ -19,7 +19,7 @@ function getConnection() {
     })
 }
 //Function to run a SQL query with parameterized values
-function runQueryValues(conn, sqlQuery, values) {
+export function runQueryValues(conn, sqlQuery, values) {
     return new Promise((resolve, reject) => {
         conn.query(sqlQuery, values, (err, result) => {
             if (err) {
@@ -40,7 +40,3 @@ const emailLogin = "select * from customers where email = ?"
 // const updateLogin = "update users set userpassword = ? where username = ?"
 
 const updateLogin = "update customers set password = ? where email = ?"
-
-
-
-module.exports = { getConnection, runQueryValues, emailLogin, updateLogin };

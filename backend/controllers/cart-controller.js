@@ -1,10 +1,9 @@
-const Sequelize = require('sequelize');
-const { Op } = require('sequelize');
-const { Cart, CartItem } = require('../model/cart');
-const { Product } = require('../model/products');
-const { Order } = require('../model/orders');
+import { Op } from 'sequelize';
+import { Cart, CartItem } from '../model/cart.js';
+import { Order } from '../model/orders.js';
+import { Product } from '../model/products.js';
 
-const addToCart = async (customerId, productId, quantity) => {
+export const addToCart = async (customerId, productId, quantity) => {
     try {
         let cart = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
         await cart[0].addProducts(productId, { through: { quantity } }); // Use addProducts
@@ -15,7 +14,7 @@ const addToCart = async (customerId, productId, quantity) => {
     }
 };
 
-const checkOut = async (customerId) => {
+export const checkOut = async (customerId) => {
     try {
         let cart = await Cart.findOne({ where: { customerId }, include: [{ model: Product }] }); // Include associated products
         let order = await Order.create({ customerId });
@@ -30,7 +29,7 @@ const checkOut = async (customerId) => {
     }
 };
 
-const retrieveCart = async (req, res) => {
+export const retrieveCart = async (req, res) => {
     try {
         const userId = req.body.customerId;
         const cart = await Cart.findOne({ where: { customerId } });
@@ -46,7 +45,7 @@ const retrieveCart = async (req, res) => {
     }
 }
 
-const cleanUpOldCarts = async () => {
+export const cleanUpOldCarts = async () => {
     try {
         //time limit for cart expiry(a week)
         const expiryTime = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -65,5 +64,3 @@ const cleanUpOldCarts = async () => {
         console.log('Error cleaning up old carts: ', err)
     }
 }
-
-module.exports = { addToCart, checkOut, retrieveCart, cleanUpOldCarts }

@@ -1,6 +1,6 @@
-const { Product } = require('../model/products');
+import { Product } from '../model/products.js';
 //Define the function to insert new Product
-const insertProduct = async (req, res) => {
+export const insertProduct = async (req, res) => {
     try {
 
         const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize } = req.body; //Create a new instance of the model with data
@@ -27,7 +27,7 @@ const insertProduct = async (req, res) => {
     }
 }
 //function to get all products from database
-const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
     try {
         const products = await Product.findAll({ include: Product.ProductCategory });
         res.status(200).json(products);
@@ -38,7 +38,7 @@ const getAllProducts = async (req, res) => {
 }
 
 //function to get a product by its ID
-const getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
     const productid = req.params.Productid;
     try {
         const product = await Product.findByPk(productid, { include: Product.ProductCategory });
@@ -54,7 +54,7 @@ const getProductById = async (req, res) => {
 }
 
 //function to get product by category
-const getProductByCategory = async (req, res) => {
+export const getProductByCategory = async (req, res) => {
     const category = req.params.category;
     try {
         const products = await Product.findAll({ where: { ProductCategory: category } });
@@ -66,7 +66,7 @@ const getProductByCategory = async (req, res) => {
 };
 
 //function to get product by subcategory
-const getProductBySubCategory = async (req, res) => {
+export const getProductBySubCategory = async (req, res) => {
     const { category, subcategory } = req.params;
     try {
         const products = await Product.findAll({
@@ -83,7 +83,7 @@ const getProductBySubCategory = async (req, res) => {
 }
 
 //function to update an existing product by its ID
-const updateProductById = async (req, res) => {
+export const updateProductById = async (req, res) => {
     const ProductId = req.params.Productid;
     const updatedProductData = {
         ProductName: req.body.ProductName,
@@ -106,7 +106,7 @@ const updateProductById = async (req, res) => {
     }
 }
 //function to delete an existing product by its ID
-const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     const ProductId = req.params.Productid;
     try {
         const product = await Product.findByPk(ProductId);
@@ -120,5 +120,3 @@ const deleteProduct = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-//Export modules
-module.exports = { insertProduct, getAllProducts, getProductById, updateProductById, deleteProduct, getProductByCategory, getProductBySubCategory };

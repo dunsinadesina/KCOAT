@@ -1,29 +1,26 @@
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs');
-const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
-const { Customer } = require('../model/customer');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { Customer } from '../model/customer.js';
 const secret = process.env.JWT_SECRET || "Tech4Dev";
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, userpassword } = req.body;
     try {
         if (!email || !userpassword) {
             return res.status(400).json({ message: 'Fill all fields' });
         }
-        else {
-            const customer = await Customer.findOne({ where: { email } });
-            if (!customer) {
-                return res.status(404).json({ message: 'email not found. Do you want to create an account?' });
-            }
-            //Compare the provided password with the stored hashed password
-            const passwordMatch = await bcrypt.compare(userpassword, customer.password);
-            if (passwordMatch) {
+        const customer = await Customer.findOne({ where: { email } });
+        if (!customer) {
+            return res.status(404).json({ message: 'Email not found. Do you want to create an account?' });
+        }
+        //Compare the provided password with the stored hashed password
+        const passwordMatch = await bcrypt.compare(userpassword, customer.password);
+        if (passwordMatch) {
                 const token = jwt.sign({ email: customer.email }, secret);
                 return res.status(200).json({ message: 'Login successful', token });
-            }
-            else {
-                return res.status(401).json({ message: 'Wrong password' });
-            }
+        }
+        else {
+            return res.status(401).json({ message: 'Wrong password' });
         }
     } catch (error) {
         console.log('Login error: ', error);
@@ -34,7 +31,7 @@ const login = async (req, res) => {
 //Initialize an empty set to store invalidated tokens
 const tokenBlacklist = new Set();
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
         tokenBlacklist.add(token);
@@ -44,5 +41,3 @@ const logout = async (req, res) => {
         return res.status(500).json({ message: 'An error occurred during logout' });
     }
 }
-
-module.exports = { login, logout };

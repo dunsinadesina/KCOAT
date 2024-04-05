@@ -1,7 +1,7 @@
 // Import necessary modules
-const { Sequelize, Model, DataTypes } = require('sequelize');
-const { sequelize } = require("../config/connection");
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from "../config/connection.js";
 
 class Customer extends Model { }
 // Creating a customer model
@@ -25,11 +25,11 @@ Customer.init({
         allowNull: false,
         unique: true
     },
-    isVerified:{
+    isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    emailToken:{
+    emailToken: {
         type: DataTypes.STRING,
     }
 },
@@ -61,4 +61,4 @@ Customer.sync().then((result) => {
 });
 
 // Export Customer module
-module.exports = { Customer };
+export { Customer };

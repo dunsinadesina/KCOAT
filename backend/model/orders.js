@@ -1,7 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require("../config/connection");
-const { Customer } = require('./customer')
-const { Product } = require('./products')
+import { DataTypes, Sequelize } from 'sequelize';
+import { sequelize } from "../config/connection.js";
+import { Customer } from './customer.js';
+import { Product } from './products.js';
 // Order model
 const Order = sequelize.define('Order', {
     id: {
@@ -51,4 +51,4 @@ Order.belongsTo(Product, { foreignKey: 'productId' });
     console.log("Order model synchronized with database");
 })();
 
-module.exports = { Order };
+export { Order };

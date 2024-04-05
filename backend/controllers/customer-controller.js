@@ -1,25 +1,19 @@
-const jwt = require('jsonwebtoken');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
-const { Customer } = require('../model/customer');
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import { Customer } from '../model/customer.js';
+import { sendVerificationMail } from './mail.js';
 const secretKey = process.env.JWT_SECRET || 'Tech4Dev';
-const { sendVerificationMail } = require('./mail')
 
-const insertCus = async (req, res) => {
+export const insertCus = async (req, res) => {
     const { cusName, email, password } = req.body;
     try {
         if (!cusName || !email || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
         }
-
         const existingCustomer = await Customer.findOne({ where: { email: req.body.email } });
         if (existingCustomer) {
             return res.status(400).json({ error: 'Customer with this email already exists' });
         }
-
-        //const hashedPassword = await bcrypt.hash(password, 10);
-
         const newCustomer = await Customer.create({
             cusName,
             email,
@@ -33,7 +27,7 @@ const insertCus = async (req, res) => {
     }
 }
 
-const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
     try {
         const emailToken = req.body.emailToken;
         if (!emailToken) return res.status(404).json({ message: 'Email token not found...' });
@@ -65,5 +59,3 @@ const verifyEmail = async (req, res) => {
         res.status(500).json({ message: 'Server Error!', error })
     }
 }
-
-module.exports = { insertCus, verifyEmail };

@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
-const { getConnection, runQueryValues, updateLogin, emailLogin } = require('../model/dbPool')
+import bcrypt from 'bcryptjs';
+import { getConnection, runQueryValues } from '../model/dbPool.js';
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     try {
@@ -35,5 +35,3 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({ message: 'An error occurred while resetting password' })
     }
 }
-//Export the resetPassword function
-module.exports = { resetPassword }

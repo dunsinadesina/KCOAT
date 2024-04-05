@@ -1,6 +1,6 @@
-const { Sequelize } = require('sequelize');
-const { Product } = require('../model/products');
-const productSearch = async (req, res) => {
+import { Sequelize } from 'sequelize';
+import { Product } from '../model/products.js';
+export const productSearch = async (req, res) => {
     try {
         const { searchKeyword, category, minPrice, maxPrice, page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
@@ -44,5 +44,3 @@ const productSearch = async (req, res) => {
     }
     
 }
-
-module.exports = { productSearch }

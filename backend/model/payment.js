@@ -1,7 +1,7 @@
 // payment.js
-const { Sequelize, DataTypes } = require('sequelize');
-const { sequelize } = require("../config/connection");
-const { Customer } = require('./customer')
+import { DataTypes } from 'sequelize';
+import { sequelize } from "../config/connection.js";
+import { Customer } from './customer.js';
 const Payment = sequelize.define('Payment', {
     id: {
         type: DataTypes.INTEGER,
@@ -39,4 +39,4 @@ Payment.belongsTo(Customer, { foreignKey: 'customerId' });
 
 Payment.sync()
 
-module.exports = { Payment };
+export { Payment };

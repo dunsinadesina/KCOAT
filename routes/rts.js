@@ -1,17 +1,15 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+export const router = express.Router();
 //Import middleware and controllers
-const { mid} = require('../backend/middleware/mwd')
-const { isAdmin, isCustomer, authenticateToken } = require('../backend/middleware/auth')
-const { login, logout } = require('../backend/controllers/login')
-const { home, about, details } = require('../backend/controllers/users')
-const { resetPassword } = require('../backend/controllers/resetPassword')
-const { insertCus,verifyEmail } = require('../backend/controllers/customer-controller')
-const { insertProduct, getAllProducts, getProductById, updateProductById, deleteProduct, getProductByCategory, getProductBySubCategory } = require('../backend/controllers/product-controller')
-const { productSearch } = require('../backend/controllers/product-search')
-const { createOrder, viewOrders, viewParticularOrder, updateOrder, cancelOrder, updateOrderStatus, calcOrderTotal, convertCartToOrder } = require('../backend/controllers/order-controller')
-const { addToCart, checkOut, retrieveCart, cleanUpOldCarts } = require('../backend/controllers/cart-controller')
-const {checkoutPayment, webHook} = require('../backend/controllers/payment-controller')
+import { addToCart, checkOut, cleanUpOldCarts, retrieveCart } from '../backend/controllers/cart-controller.js';
+import { insertCus, verifyEmail } from '../backend/controllers/customer-controller.js';
+import { login, logout } from '../backend/controllers/login.js';
+import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
+import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
+import { deleteProduct, getAllProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
+import { resetPassword } from '../backend/controllers/resetPassword.js';
+import { isAdmin } from '../backend/middleware/auth.js';
+import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)
@@ -39,12 +37,8 @@ router.delete('/cleanup', cleanUpOldCarts)
 router.post('/convertcarttoorder', convertCartToOrder)
 router.post('create-checkout-session', checkoutPayment)
 router.post('/webhook', express.raw({type:'application/json'}),webHook)
-router.get('/admin/dashboard', isAdmin, (req, res) => {
+router.get('/admin-dashboard', isAdmin, (req, res) => {
     res.json({ message: 'Admin dashboard accessed successfully' })
-})
-router.get('/customer/profile', isCustomer, (req, res) => {
-    res.json({ message: 'Customer profile accessed successfully' })
 })
 // router.get('/details', verifyAuth, details)
 router.get('/reset', resetPassword)
-module.exports = { router };

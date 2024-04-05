@@ -1,5 +1,5 @@
-const {Sequelize, DataTypes} = require('sequelize');
-const { sequelize } = require("../config/connection");
+import { DataTypes } from 'sequelize';
+import { sequelize } from "../config/connection.js";
 
 const Product = sequelize.define("Products", {
     Productid: {
@@ -38,4 +38,4 @@ const Product = sequelize.define("Products", {
 //Sync the Products model with the database
 Product.sync();
 
-module.exports = { Product };
+export { Product };

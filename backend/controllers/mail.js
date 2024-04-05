@@ -1,4 +1,4 @@
-const mailer = require('nodemailer');
+import mailer from 'nodemailer';
 //Create a transporter object
 const createMailTransporter = () => {
     const transporter = mailer.createTransport({
@@ -11,7 +11,7 @@ const createMailTransporter = () => {
     return transporter;
 }
 //function to send order confirmation email
-const sendVerificationMail = (user) => {
+export const sendVerificationMail = (user) => {
     const transporter = createMailTransporter();
 
     const mailOptions = {
@@ -31,5 +31,3 @@ const sendVerificationMail = (user) => {
         }
     });
 };
-
-module.exports = { sendVerificationMail };
