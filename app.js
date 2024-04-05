@@ -18,6 +18,8 @@ app.use(bodyParser.json());
 // Parse incoming URL-encoded requests
 app.use(bodyParser.urlencoded({ extended: false }));
 //Use the router defined in './routes/rts' for routing
+app.use(express.static('public'));
+
 app.use('/', router);
 //Start the server on port 6000
 app.listen(6000, function () {

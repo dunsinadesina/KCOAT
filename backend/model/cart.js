@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require("../config/connection");
 const { Customer } = require('./customer');
 const { Product } = require('./products');
-// const { Order } = require('./orders')
+
 //Creating cart model
 const Cart = sequelize.define('Cart', {
     id: {
@@ -28,39 +28,23 @@ const Cart = sequelize.define('Cart', {
 
 const CartItem = sequelize.define('CartItem', {
     id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    productId: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        references: {
-            model: 'Products',
-            key: 'Productid'
-        },
     },
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
-    },
-    cartId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Carts',
-            key: 'id'
-        }
     }
 });
-//define associations
+
+// Define associations
 Cart.belongsTo(Customer, { foreignKey: 'customerId' });
 Cart.belongsToMany(Product, { through: CartItem });
-CartItem.belongsTo(Product, { foreignKey: 'productId' })
-CartItem.belongsTo(Cart, { foreignKey: 'cartId' })
+Product.belongsToMany(Cart, { through: CartItem });
 
-// Cart.sync();
-// CartItem.sync();
+// Sync models with the database
+Cart.sync();
+CartItem.sync();
 
 module.exports = { Cart, CartItem };

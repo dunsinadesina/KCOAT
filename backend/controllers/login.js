@@ -2,25 +2,28 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const { getConnection, runQueryValues, loginSyntax } = require('../model/dbPool');
 const { Customer } = require('../model/customer');
-//const { User } = require('../model/user')
-const secret = process.env.JWT_SECRET || "defaultSecret";
+const secret = process.env.JWT_SECRET || "Tech4Dev";
 
 const login = async (req, res) => {
     const { email, userpassword } = req.body;
     try {
-        const customer = await Customer.findOne({ where: { email } });
-        if (!customer) {
-            return res.status(404).json({ message: 'email not found. Do you want to create an account?' });
-        }
-        //Compare the provided password with the stored hashed password
-        const passwordMatch = await bcrypt.compare(userpassword, customer.password);
-        if (passwordMatch) {
-            const role = User.role;
-            const token = jwt.sign({ email: customer.email, role }, secret);
-            return res.status(200).json({ message: 'Login successful', token });
+        if (!email || !userpassword) {
+            return res.status(400).json({ message: 'Fill all fields' });
         }
         else {
-            return res.status(401).json({ message: 'Wrong password' });
+            const customer = await Customer.findOne({ where: { email } });
+            if (!customer) {
+                return res.status(404).json({ message: 'email not found. Do you want to create an account?' });
+            }
+            //Compare the provided password with the stored hashed password
+            const passwordMatch = await bcrypt.compare(userpassword, customer.password);
+            if (passwordMatch) {
+                const token = jwt.sign({ email: customer.email }, secret);
+                return res.status(200).json({ message: 'Login successful', token });
+            }
+            else {
+                return res.status(401).json({ message: 'Wrong password' });
+            }
         }
     } catch (error) {
         console.log('Login error: ', error);

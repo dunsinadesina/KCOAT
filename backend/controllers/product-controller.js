@@ -3,8 +3,8 @@ const { Product } = require('../model/products');
 const insertProduct = async (req, res) => {
     try {
 
-        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, size } = req.body; //Create a new instance of the model with data
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !size) {
+        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize } = req.body; //Create a new instance of the model with data
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !ProductSize) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         else {
@@ -16,7 +16,7 @@ const insertProduct = async (req, res) => {
                 ProductCategory,
                 SubCategory,
                 ProductImage,
-                size
+                ProductSize
             });
             console.log("New product created");
             res.status(201).json({ message: 'New Product created', result: newProduct });
