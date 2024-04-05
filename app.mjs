@@ -185,7 +185,7 @@ const start = async () => {
 
     // Start the server
     app.listen(PORT, () => {
-        console.log(`SERVER RUNNING, AdminJS started on https://kcoat-1.onrender.com${admin.options.rootPath}`);
+        console.log(`SERVER RUNNING, AdminJS started on https://kcoat.onrender.com${admin.options.rootPath}`);
     });
 }
 
