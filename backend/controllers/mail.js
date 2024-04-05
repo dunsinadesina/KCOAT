@@ -4,8 +4,8 @@ const createMailTransporter = () => {
     const transporter = mailer.createTransport({
         service: 'hotmail',
         auth: {
-            user: 'jesudunsinadesina@womentechsters.org',
-            pass: 'Dunsin23',
+            user: 'kcoatstyle@outlook.com',
+            pass: 'kcoatkcoat12',
         },
     });
     return transporter;
