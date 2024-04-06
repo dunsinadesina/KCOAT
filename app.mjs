@@ -20,18 +20,18 @@ AdminJS.registerAdapter({
     Database: AdminJSSequelize.Database,
 })
 const PORT = 3000;
-
+const sessionSecret = 'KCOAT';
 const DEFAULT_ADMIN = {
     email: 'jesudunsinadesina@gmail.com',
     password: 'Dunsin23',
-  }
-  
-  const authenticate = async (email, password) => {
+}
+
+const authenticate = async (email, password) => {
     if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
-      return Promise.resolve(DEFAULT_ADMIN)
+        return Promise.resolve(DEFAULT_ADMIN)
     }
     return null
-  }
+}
 
 const start = async () => {
     const app = express()
@@ -143,7 +143,7 @@ const start = async () => {
         },
     };
 
-    
+
     // Initialize AdminJS
     const admin = new AdminJS(adminOptions);
     const SequelizeStore = connectSessionSequelize(session.Store);
@@ -151,7 +151,13 @@ const start = async () => {
         db: sequelize,
         tableName: 'Session',
         expiration: 24 * 60 * 60 * 1000, //1 day expiration time
-    })
+    });
+    //register session middleware
+    app.use(session({
+        secret: sessionSecret,
+        resave: false,
+        saveUninitialized: true,
+    }));
     // Build AdminJS router
     const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
         admin,
@@ -162,15 +168,15 @@ const start = async () => {
         {
             store: sessionStore,
             resave: true,
-            saveUninitialized:true,
-            secret: 'sessionsecret',
-            cookie:{
+            saveUninitialized: true,
+            secret: sessionSecret,
+            cookie: {
                 httpOnly: process.env.NODE_ENV === 'production',
                 secure: process.env.NODE_ENV === 'production'
             },
             name: 'adminjs'
         }
-        );
+    );
     // Set up middleware and routes
     app.use(cors());
     app.use(cookieParser());
