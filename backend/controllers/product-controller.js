@@ -4,24 +4,30 @@ export const insertProduct = async (req, res) => {
     try {
 
         const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body; //Create a new instance of the model with data
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !ProductSize || !Quantity) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         else {
-            //Create new product record using the product model
-            const newProduct = await Product.create({
-                ProductName,
-                ProductPrice,
-                ProductDescription,
-                ProductCategory,
-                SubCategory,
-                ProductImage,
-                Quantity,
-                ProductSize
-            });
-            console.log("New product created");
-            res.status(201).json({ message: 'New Product created', result: newProduct });
-        }
+            const existingProduct = await Product.findOne({where: {ProductName}});
+            if(existingProduct){
+                return res.status(400).json({message: 'Product with the same name already exists'});
+            }else{
+                //Create new product record using the product model
+                const newProduct = await Product.create({
+                    ProductName,
+                    ProductPrice,
+                    ProductDescription,
+                    ProductCategory,
+                    SubCategory,
+                    ProductImage,
+                    Quantity,
+                    ProductSize
+                });
+                console.log("New product created");
+                res.status(201).json({ message: 'New Product created', result: newProduct });
+            }
+            }
+            
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error', error })
