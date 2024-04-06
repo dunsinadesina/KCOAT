@@ -11,7 +11,7 @@ export const sanitizeProductFields=  (req, res, next) =>{
     
     // Sanitize product price
     if (req.body.ProductPrice) {
-      req.body.ProductPrice = req.body.ProductPrice.replace(/,/g, '').trim(); // Remove commas and trim whitespace
+        req.body.ProductPrice = req.body.ProductPrice.replace(/[, ]/g, '').trim();  // Remove commas and trim whitespace
     }
   
     next();
