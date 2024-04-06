@@ -181,11 +181,14 @@ const start = async () => {
     // Set up middleware and routes
     app.use(cors());
     app.use(cookieParser());
+    app.use(express.static('public'));
+    app.use(admin.options.rootPath, adminRouter);
+    
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(express.static('public'));
+    
     // Use AdminJS router
-    app.use(admin.options.rootPath, adminRouter);
+    
 
     // Use customer routes
     app.use('/', router);
