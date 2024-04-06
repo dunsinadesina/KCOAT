@@ -2,6 +2,21 @@ import jwt from "jsonwebtoken";
 import { Customer } from '../model/customer.js';
 const secret = process.env.JWT_SECRET || "Tech4Dev";
 
+// Middleware to sanitize product size and price fields
+export const sanitizeProductFields=  (req, res, next) =>{
+    // Sanitize product size
+    if (req.body.ProductSize) {
+      req.body.ProductSize = req.body.ProductSize.replace(/,/g, '').trim(); // Remove commas and trim whitespace
+    }
+    
+    // Sanitize product price
+    if (req.body.ProductPrice) {
+      req.body.ProductPrice = req.body.ProductPrice.replace(/,/g, '').trim(); // Remove commas and trim whitespace
+    }
+  
+    next();
+  }
+
 export const authenticateToken = async (req, res, next) => {
     try {
         if (!req.headers.authorization) {
