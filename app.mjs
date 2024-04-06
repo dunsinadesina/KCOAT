@@ -157,6 +157,7 @@ const start = async () => {
         secret: sessionSecret,
         resave: false,
         saveUninitialized: true,
+        store: sessionStore
     }));
     // Build AdminJS router
     const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
