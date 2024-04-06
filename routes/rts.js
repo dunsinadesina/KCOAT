@@ -19,7 +19,7 @@ router.post( '/verify-email', verifyEmail)
 router.post('/products', insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
-router.get('/products/:category', getProductByCategory);
+router.post('/products/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
 router.put('/products/:Productid', updateProductById)
 router.delete('products/:Productid', deleteProduct)
