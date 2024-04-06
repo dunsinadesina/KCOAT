@@ -3,8 +3,8 @@ import { Product } from '../model/products.js';
 export const insertProduct = async (req, res) => {
     try {
 
-        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize } = req.body; //Create a new instance of the model with data
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !ProductSize) {
+        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body; //Create a new instance of the model with data
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !ProductSize || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         else {
@@ -16,6 +16,7 @@ export const insertProduct = async (req, res) => {
                 ProductCategory,
                 SubCategory,
                 ProductImage,
+                Quantity,
                 ProductSize
             });
             console.log("New product created");
@@ -91,7 +92,8 @@ export const updateProductById = async (req, res) => {
         ProductDescription: req.body.ProductDescription,
         ProductCategory: req.body.ProductCategory,
         ProductImage: req.body.ProductImage,
-        categoryId: req.body.categoryId
+        categoryId: req.body.categoryId,
+        Quantity: req.body.Quantity
     }
     try {
         const product = await Product.findByPk(ProductId);
@@ -118,5 +120,26 @@ export const deleteProduct = async (req, res) => {
     } catch (err) {
         console.log('Error occurred while deleting product', err)
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+export const purchaseProduct = async (req, res)=>{
+    try {
+        const productId = req.params.productId;
+        const product = await Product.findById(productId);
+
+        if (!product){
+            return res.status(404).json({message: 'Product not found'});
+        }
+
+        if (product.quantity <= 0){
+            return res.status(400).json({message: 'Product out of stock'});
+        }
+        //Decrement quantity
+        product.quantity -= 1;
+        await product.save();
+        return res.status(200).json({message: 'Product purchased successfully'});
+    } catch (error) {
+        return res.status(500).json({message: 'Internal Server Error', error})
     }
 }

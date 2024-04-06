@@ -16,8 +16,8 @@ export const login = async (req, res) => {
         //Compare the provided password with the stored hashed password
         const passwordMatch = await bcrypt.compare(userpassword, customer.password);
         if (passwordMatch) {
-                const token = jwt.sign({ email: customer.email }, secret);
-                return res.status(200).json({ message: 'Login successful', token });
+                const token = jwt.sign({ email: customer.email }, secret, {expiresIn: '1h'});
+                return res.status(200).json({ message: 'Login successful',token });
         }
         else {
             return res.status(401).json({ message: 'Wrong password' });

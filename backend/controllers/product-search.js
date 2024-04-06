@@ -34,13 +34,13 @@ export const productSearch = async (req, res) => {
     } catch (error) {
         console.log("Error encountered while searching for products", error);
         res.status(500).json({ error: 'Internal Server Error' });
-    } finally{
+    } finally {
         try {
-            await sequelize.close();
+            await Sequelize.close();
             console.log('Database connection closed successfully.');
         } catch (error) {
             console.error('Error closing database connection:', error);
         }
     }
-    
+
 }

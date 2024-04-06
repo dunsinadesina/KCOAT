@@ -21,7 +21,7 @@ router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
-router.put('/products/:Productid', updateProductById)
+router.put('/products/:Productid', sanitizeProductFields, updateProductById)
 router.delete('products/:Productid', deleteProduct)
 router.post('/createorder', createOrder)
 router.get('/vieworders', viewOrders)

@@ -2,11 +2,17 @@ import { Op } from 'sequelize';
 import { Cart, CartItem } from '../model/cart.js';
 import { Order } from '../model/orders.js';
 import { Product } from '../model/products.js';
+import { purchaseProduct } from './product-controller.js';
 
 export const addToCart = async (customerId, productId, quantity) => {
     try {
-        let cart = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
-        await cart[0].addProducts(productId, { through: { quantity } }); // Use addProducts
+        const [cart, created] = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
+        if (created){
+            console.log('New cart created for customer: ', customerId);
+        }else{
+            console.log('Cart already exists for customer: ', customerId);
+        }
+        await cart.addProducts(productId, { through: { quantity } }); // Use addProducts
         return { success: true, message: 'Product has been successfully added to your shopping cart.' };
     } catch (err) {
         console.log('Error adding product to your shopping cart: ', err);
@@ -20,6 +26,7 @@ export const checkOut = async (customerId) => {
         let order = await Order.create({ customerId });
         for (let item of cart.Products) {
             await order.addProduct(item.id, { through: { quantity: item.CartItem.quantity } }); // Access quantity through CartItem
+            await purchaseProduct(item.id);
         }
         await cart.removeProducts(cart.Products); // Use removeProducts
         return { success: true, message: 'Checkout successful' };
@@ -31,7 +38,7 @@ export const checkOut = async (customerId) => {
 
 export const retrieveCart = async (req, res) => {
     try {
-        const userId = req.body.customerId;
+        const customerId = req.body.customerId;
         const cart = await Cart.findOne({ where: { customerId } });
         if (cart) {
             const cartItems = await CartItem.findAll({ where: { cartId: cart.id }, include: Product });
