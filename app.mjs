@@ -3,8 +3,8 @@ import * as AdminJSSequelize from '@adminjs/sequelize';
 import AdminJS from 'adminjs';
 import bodyParser from 'body-parser';
 import connectSessionSequelize from 'connect-session-sequelize';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
+//import cookieParser from 'cookie-parser';
+//import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
 import { sequelize } from './backend/config/connection.js';
@@ -179,8 +179,8 @@ const start = async () => {
         }
     );
     // Set up middleware and routes
-    app.use(cors());
-    app.use(cookieParser());
+    // app.use(cors());
+    // app.use(cookieParser());
     app.use(express.static('public'));
     app.use(admin.options.rootPath, adminRouter);
     
