@@ -6,7 +6,7 @@ import { insertCus, verifyEmail } from '../backend/controllers/customer-controll
 import { login, logout } from '../backend/controllers/login.js';
 import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
-import { deleteProduct, getAllProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
+import { deleteProduct, getAllProducts, getMostPopularProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { resetPassword } from '../backend/controllers/resetPassword.js';
 import { isAdmin, sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
@@ -15,14 +15,23 @@ import { mid } from '../backend/middleware/mwd.js';
 router.post('/login', mid, login)
 router.post('/logout', logout)
 router.post('/register', insertCus)
-router.post( '/verify-email', verifyEmail)
-router.post('/products', sanitizeProductFields,insertProduct)
+router.post('/verify-email', verifyEmail)
+router.post('/products', sanitizeProductFields, insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
 router.put('/products/:Productid', sanitizeProductFields, updateProductById)
 router.delete('products/:Productid', deleteProduct)
+router.get('/most-popular-products', async (req, res) => {
+    try {
+        const popularProducts = await getMostPopularProducts();
+        res.json(popularProducts);
+    } catch (error) {
+        console.log('Error in handling request: ', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
 router.post('/createorder', createOrder)
 router.get('/vieworders', viewOrders)
 router.get('/orders/:orderId', viewParticularOrder)
@@ -36,7 +45,7 @@ router.post('/retrievecart', retrieveCart)
 router.delete('/cleanup', cleanUpOldCarts)
 router.post('/convertcarttoorder', convertCartToOrder)
 router.post('create-checkout-session', checkoutPayment)
-router.post('/webhook', express.raw({type:'application/json'}),webHook)
+router.post('/webhook', express.raw({ type: 'application/json' }), webHook)
 router.get('/admin-dashboard', isAdmin, (req, res) => {
     res.json({ message: 'Admin dashboard accessed successfully' })
 })

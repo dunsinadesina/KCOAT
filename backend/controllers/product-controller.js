@@ -1,3 +1,4 @@
+import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
@@ -8,10 +9,10 @@ export const insertProduct = async (req, res) => {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         else {
-            const existingProduct = await Product.findOne({where: {ProductName}});
-            if(existingProduct){
-                return res.status(400).json({message: 'Product with the same name already exists'});
-            }else{
+            const existingProduct = await Product.findOne({ where: { ProductName } });
+            if (existingProduct) {
+                return res.status(400).json({ message: 'Product with the same name already exists' });
+            } else {
                 //Create new product record using the product model
                 const newProduct = await Product.create({
                     ProductName,
@@ -26,8 +27,8 @@ export const insertProduct = async (req, res) => {
                 console.log("New product created");
                 res.status(201).json({ message: 'New Product created', result: newProduct });
             }
-            }
-            
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error', error })
@@ -129,23 +130,40 @@ export const deleteProduct = async (req, res) => {
     }
 }
 
-export const purchaseProduct = async (req, res)=>{
+export const purchaseProduct = async (req, res) => {
     try {
         const productId = req.params.productId;
         const product = await Product.findById(productId);
 
-        if (!product){
-            return res.status(404).json({message: 'Product not found'});
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
         }
 
-        if (product.quantity <= 0){
-            return res.status(400).json({message: 'Product out of stock'});
+        if (product.quantity <= 0) {
+            return res.status(400).json({ message: 'Product out of stock' });
         }
         //Decrement quantity
         product.quantity -= 1;
         await product.save();
-        return res.status(200).json({message: 'Product purchased successfully'});
+        return res.status(200).json({ message: 'Product purchased successfully' });
     } catch (error) {
-        return res.status(500).json({message: 'Internal Server Error', error})
+        return res.status(500).json({ message: 'Internal Server Error', error })
+    }
+}
+
+export const getMostPopularProducts = async (req, res) => {
+    try {
+        const popularProducts = await sequelize.query(
+            `SELECT p.Productid, p.ProductName, SUM(o.quantity) AS totalQuantitySold
+            FROM Products p
+            JOIN Orders o ON p.Productid = o.Productid
+            GROUP BY p.Productid, p.ProductName
+            ORDER BY totalQuantitySold DESC
+            LIMIT 4;
+            `, { type: sequelize.QueryTypes.SELECT });
+        return popularProducts;
+    } catch (error) {
+        console.log('Error in fetching popular products: ', error);
+        throw error;
     }
 }
