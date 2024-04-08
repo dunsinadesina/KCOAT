@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 //import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
+const app = express();
 //import session from 'express-session';
 // import { Cart, CartItem } from './backend/model/cart.js';
 // import { Customer } from './backend/model/customer.js';
@@ -32,7 +33,7 @@ import express from 'express';
 // }
 
 // const start = async () => {
-//     const app = express()
+//    
 //     const adminOptions = {
 //         // We pass Customer to `resources`
 //         resources: [
