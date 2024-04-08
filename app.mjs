@@ -179,7 +179,7 @@ const app = express();
 //     );
     // Set up middleware and routes
      app.use(cors());
-    app.use(cookieParser());
+    //app.use(cookieParser());
     app.use(express.static('public'));
     //app.use(admin.options.rootPath, adminRouter);
     
