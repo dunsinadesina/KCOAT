@@ -4,25 +4,24 @@ import { Order } from '../model/orders.js';
 import { Product } from '../model/products.js';
 import { purchaseProduct } from './product-controller.js';
 
-export const addToCart = async (productId, customerId, quantity) => {
+export const addToCart = async (req, res) => {
+    const { productId } = req.body;
     try {
-        const [cart, created] = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
-        if (created) {
-            console.log('New cart created for customer: ', customerId);
-            res.status(201).json({ message: 'New cart created for customer' })
-        } else {
-            console.log('Cart already exists for customer: ', customerId);
-            res.status(400).json({ message: 'Cart already exists for customer' });
+        const product = await Product.findByPk(productId);
+        if (!product) {
+            res.status(404).json({ message: 'Product not found' })
         }
-        console.log('Adding products to cart: ', productId, 'Quantity: ', quantity);
-        await cart.addProducts(productId, { through: { quantity } }); // Use addProducts
-        console.log('Product added to cart');
-        await cart.save();
-        console.log('Cart saved');
-        return { success: true, message: 'Product has been successfully added to your shopping cart.' };
-    } catch (err) {
-        console.log('Error adding product to your shopping cart: ', err);
-        return { success: false, message: 'Failed to add product to your shopping cart' };
+        const newCartItem = await CartItem.create({
+            productId: product.Productid,
+            ProductName: product.ProductName,
+            ProductPrice: product.ProductPrice,
+            quantity: 1, //default
+            ProductImage: product.ProductImage
+        })
+        return res.status(200).json({ message: 'Product added to cart', newCartItem });
+    } catch (error) {
+        console.log('Error adding product to cart:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -47,7 +46,7 @@ export const retrieveCart = async (req, res) => {
         const customerId = req.query.customerId;
         const cart = await Cart.findOne({ where: { customerId } });
         if (cart) {
-            const cartItems = await CartItem.findAll({ where: { cartId: cart.id }, include: {model: Product} });
+            const cartItems = await CartItem.findAll({ where: { cartId: cart.id }, include: { model: Product } });
             res.status(200).json({ message: 'Successfully retrieved cart', cartItems });
         } else {
             res.status(404).json({ message: "No cart found for this user" })
