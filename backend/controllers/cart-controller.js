@@ -5,7 +5,7 @@ import { Product } from '../model/products.js';
 import { purchaseProduct } from './product-controller.js';
 
 export const addToCart = async (req, res) => {
-    const { customerId, Productid, quantity } = req.body;
+    const { customerId, productId, quantity } = req.body;
     try {
         const [cart, created] = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
         if (created) {
@@ -15,7 +15,11 @@ export const addToCart = async (req, res) => {
             console.log('Cart already exists for customer: ', customerId);
             res.status(400).json({ message: 'Cart already exists for customer' });
         }
-        await cart.addProducts(Productid, { through: { quantity } }); // Use addProducts
+        console.log('Adding products to cart: ', productId, 'Quantity: ', quantity);
+        await cart.addProducts(productId, { through: { quantity } }); // Use addProducts
+        console.log('Product added to cart');
+        await cart.save();
+        console.log('Cart saved');
         return { success: true, message: 'Product has been successfully added to your shopping cart.' };
     } catch (err) {
         console.log('Error adding product to your shopping cart: ', err);
@@ -41,10 +45,10 @@ export const checkOut = async (customerId) => {
 
 export const retrieveCart = async (req, res) => {
     try {
-        const customerId = req.body.customerId;
+        const customerId = req.query.customerId;
         const cart = await Cart.findOne({ where: { customerId } });
         if (cart) {
-            const cartItems = await CartItem.findAll({ where: { cartId: cart.id }, include: Product });
+            const cartItems = await CartItem.findAll({ where: { cartId: cart.id }, include: {model: Product} });
             res.status(200).json({ message: 'Successfully retrieved cart', cartItems });
         } else {
             res.status(404).json({ message: "No cart found for this user" })

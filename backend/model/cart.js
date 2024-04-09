@@ -42,6 +42,7 @@ const CartItem = sequelize.define('CartItem', {
 Cart.belongsTo(Customer, { foreignKey: 'customerId' });
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+CartItem.belongsTo(Product);
 
 // Sync models with the database
 Cart.sync();
