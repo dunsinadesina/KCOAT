@@ -4,8 +4,7 @@ import { Order } from '../model/orders.js';
 import { Product } from '../model/products.js';
 import { purchaseProduct } from './product-controller.js';
 
-export const addToCart = async (req, res) => {
-    const { customerId, productId, quantity } = req.body;
+export const addToCart = async (productId, customerId, quantity) => {
     try {
         const [cart, created] = await Cart.findOrCreate({ where: { customerId } }); // Find or create the cart
         if (created) {
