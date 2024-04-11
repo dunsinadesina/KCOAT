@@ -1,7 +1,7 @@
 // This is your test secret API key.
 import Stripe from 'stripe';
 import { createOrder } from './order-controller.js';
-const stripe = Stripe(process.env.STRIPE_TEST_KEY);;
+const stripe = Stripe(process.env.STRIPE_TEST_KEY || sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don);
 
 const secret = process.env.JWT_SECRET || 'Tech4Dev';
 let endpointSecret;
