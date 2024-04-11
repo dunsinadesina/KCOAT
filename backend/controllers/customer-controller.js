@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { Customer } from '../model/customer.js';
 import { sendVerificationMail } from './mail.js';
@@ -6,6 +7,15 @@ const secretKey = process.env.JWT_SECRET || 'Tech4Dev';
 
 export const insertCus = async (req, res) => {
     const { cusName, email, password } = req.body;
+    const schema = Joi.object({
+        cusName: Joi.string().required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required()
+    });
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
     try {
         if (!cusName || !email || !password) {
             return res.status(400).json({ message: "Please fill all the fields" });
@@ -34,7 +44,7 @@ export const verifyEmail = async (req, res) => {
         const user = await Customer.findOne({ where: { emailToken } });
         if (user) {
             user.cusName,
-            user.emailToken = null;
+                user.emailToken = null;
             user.isVerified = true;
 
             await user.save();
