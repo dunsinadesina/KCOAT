@@ -44,7 +44,7 @@ router.delete('/checkout', checkOut)
 router.post('/retrievecart', retrieveCart)
 router.delete('/cleanup', cleanUpOldCarts)
 router.post('/convertcarttoorder', convertCartToOrder)
-router.post('create-checkout-session', checkoutPayment)
+router.post('/create-checkout-session', checkoutPayment)
 router.post('/webhook', express.raw({ type: 'application/json' }), webHook)
 router.get('/admin-dashboard', isAdmin, (req, res) => {
     res.json({ message: 'Admin dashboard accessed successfully' })

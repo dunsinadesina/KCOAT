@@ -1,7 +1,8 @@
-import mailer from 'nodemailer';
+import nodemailer from 'nodemailer';
+
 //Create a transporter object
 const createMailTransporter = () => {
-    const transporter = mailer.createTransport({
+    const transporter = nodemailer.createTransport({
         service: 'hotmail',
         auth: {
             user: 'kcoatstyle@outlook.com',
@@ -15,7 +16,7 @@ export const sendVerificationMail = (user) => {
     const transporter = createMailTransporter();
 
     const mailOptions = {
-        from: '"KCOAT" <jesudunsinadesina@womentechsters.org>',
+        from: '"KCOAT" <kcoatstyle@outlook.com>',
         to: user.email,
         subject: "Verify your Email",
         html: `<p>Hello 👋 ${user.cusName}, verify your email by clicking this link...</p>
@@ -31,3 +32,21 @@ export const sendVerificationMail = (user) => {
         }
     });
 };
+
+export const sendOrderConfirmationMail = async (customerEmail, orderId)=>{
+    try{
+        const transporter = createMailTransporter();
+        const mailOptions = {
+            from: 'KCOAT <kcoatstyle@outlook.com>',
+            to: customerEmail,
+            subject: 'Order Confirmation',
+            text: `Thank you for your order!😊 Your order with ID ${orderId} has been confirmed.`,
+            html: `<p>Thank you for your order! Your order with ID ${orderId} has been confirmed.`
+        };
+
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Order confirmation mail has been sent: ', info.messageId);
+    }catch(error){
+        console.log('Error in sending order confirmation email: ', error);
+    }
+}

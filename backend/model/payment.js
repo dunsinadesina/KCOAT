@@ -21,7 +21,7 @@ const Payment = sequelize.define('Payment', {
         allowNull: false
     },
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('pending', 'success', 'failed'),
         allowNull: false
     },
     deliveryAddress: {

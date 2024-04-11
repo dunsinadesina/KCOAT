@@ -1,134 +1,124 @@
 // This is your test secret API key.
 import Stripe from 'stripe';
-import { createOrder } from './order-controller.js';
-const stripe = Stripe(process.env.STRIPE_TEST_KEY);
+import { Payment } from '../model/payment.js';
+import { sendOrderConfirmationMail } from './mail.js';
+import { createOrder, updateOrderStatus } from './order-controller.js';
+const stripe = Stripe('sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don');
 
-const secret = process.env.JWT_SECRET || 'Tech4Dev';
-let endpointSecret;
-export const checkoutPayment = async (req, res) => {
-    try {
-        const customer = await stripe.customers.create({
+// Function to update or create a Stripe customer
+const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
+    const existingStripeCustomer = await stripe.customers.list({
+        email: email,
+        limit: 1,
+    });
+    
+    if (existingStripeCustomer.data.length > 0) {
+        const stripeCustomerId = existingStripeCustomer.data[0].id;
+        await stripe.customers.update(stripeCustomerId, {
             metadata: {
-                userId: req.body.userId,
-                cart: JSON.stringify(req.body.cartItems)
+                userId: userId,
+                cart: JSON.stringify(cartItems),
             }
         });
-        const line_items = req.body.cartItems.map(item => {
-            return {
-                price_data: {
-                    currency: "NGN",
-                    product_data: {
-                        name: item.name,
-                        images: [item.image],
-                        description: item.description,
-                        metadata: {
-                            id: item.id
-                        }
-                    },
-                    unit_amount: item.price * 100,
-                },
-                quantity: item.cartQuantity,
+        return stripeCustomerId;
+    } else {
+        const newStripeCustomer = await stripe.customers.create({
+            email: email,
+            metadata: {
+                userId: userId,
+                cart: JSON.stringify(cartItems)
             }
-        })
+        });
+        return newStripeCustomer.id;
+    }
+};
+
+export const checkoutPayment = async (req, res) => {
+    try {
+        const { customerId, email, cartItems } = req.body;
+        // Ensure that req.body.cartItems is defined and is an array
+        if (!req.body.cartItems || !Array.isArray(req.body.cartItems)) {
+            throw new Error('Invalid cart items');
+        }
+        // Calculate the total amount based on the items in the cart
+        const totalAmount = req.body.cartItems.reduce((acc, item) => {
+            return acc + (item.price * item.cartQuantity);
+        }, 0);
+
+        // Update or create a customer
+        const stripeCustomerId = await updateOrCreateStripeCustomer(email, req.body.userId, cartItems);
+
+        const line_items = req.body.cartItems.map(item => ({
+            price_data: {
+                currency: "NGN",
+                product_data: {
+                    name: item.name,
+                    images: [item.image],
+                    description: item.description,
+                    metadata: { id: item.id },
+                },
+                unit_amount: Math.round(item.price * 100),
+            },
+            quantity: item.cartQuantity,
+        }));
+        //Create Stripe checkout session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             shipping_address_collection: {
                 allowed_countries: ['US', 'CA', 'NG'],
             },
-            shipping_option: [
-                {
-                    shipping_rate_data: {
-                        type: 'fixed_amount',
-                        fixed_amount: {
-                            amount: 0,
-                            currency: 'NGN',
-                        },
-                        display_name: 'Free Shipping',
-                        //Delivers between 5-7 business days
-                        delivery_estimate: {
-                            minimum: {
-                                unit: 'business_day',
-                                value: 5,
-                            },
-                            maximum: {
-                                unit: 'business_day',
-                                value: 7,
-                            },
-                        }
-                    }
-                },
-                {
-                    shipping_rate_data: {
-                        type: 'fixed amount',
-                        fixed_amount: {
-                            amount: 2000,
-                            currency: 'NGN',
-                        },
-                        display_name: 'Next day air',
-                        //Delivers in exactly 1 business day
-                        delivery_estimate: {
-                            minimum: {
-                                unit: 'business_day',
-                                value: 1
-                            },
-                            maximum: {
-                                unit: 'business_day',
-                                value: 1
-                            },
-                        }
-                    }
-                }
-            ],
-            phone_number_collection: {
-                enabled: true,
-            },
-            customer: customer.id,
             line_items,
             mode: 'payment',
-            success_url: `${process.env.CLIENT_URL}/checkout-success`,
-            cancel_url: `${process.env.CLIENT_URL}/cart`,
+            success_url: 'http://localhost:6000/checkout-success',
+            cancel_url: 'http://localhost:6000/cart',
         });
+        //Store payment information in the database
+        await Payment.create({
+            customerId: customerId,
+            amount: totalAmount,
+            status: 'pending',
+            deliveryAddress: req.body.deliveryAddress,
+            deliveryDate: req.body.deliveryDate
+        });
+
+        await sendOrderConfirmationMail(email, session.id);
 
         res.send({ url: session.url });
     } catch (error) {
-        console.log('Pyment error: ', error);
-        res.status(500).json({ message: 'An error occurred during payment' });
+        console.log('Payment error: ', error);
+        res.status(500).json({ message: 'An error occurred during payment', error });
     }
 };
 
 //stripe webhook
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
-//endpointSecret = "whsec_4c933b56864bab4df876c587f121c78ebf35421502fef1fb2d1a31ab76292411";
-
-export const webHook = (req, res) => {
+export const webHook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let data;
     let eventType;
-    if (endpointSecret) {
-
-        try {
-            const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-            console.log("Webhook verified");
-            data = event.data.object;
-            eventType = event.type;
-        } catch (err) {
-            console.log(`Webhook Error: ${err.message}`)
-            return res.status(400).send(`Webhook Error: ${err.message}`);
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+    try {
+        const event = stripe.webhooks.constructEvent(req.body, sig, secret);
+        console.log('Webhook Verified');
+        data = event.data.object;
+        eventType = event.type;
+        //Handle the event
+        switch (eventType) {
+            case 'checkout.session.completed':
+                //Retrieve customer information and create an order
+                const customer = await stripe.customers.retrieve(data.customer);
+                console.log('Customer retrieved: ', customer)
+                await createOrder(data);
+                await updateOrderStatus(data.id, 'success');
+                break;
+            case 'checkout.session.failed':
+                await updateOrderStatus(data.id, 'failed');
+                break;
+            default:
+                console.log(`Unhandled event type ${eventType}`);
         }
+        res.status(200).json({ message: 'Webhook retrieved and processed successfully' });
+    } catch (error) {
+        console.log(`Webhook Error: ${error.message}`);
+        res.status(500).json({ message: `Webhook Error: ${error.message}` });
     }
-    else {
-        data = req.body.data.object;
-        eventType = req.body.type
-    }
-
-    // Handle the event
-    if (eventType === 'checkout.session.completed') {
-        stripe.customers
-            .retrieve(data.customer)
-            .then(() => {
-                createOrder()
-            })
-            .catch((error) => console.log(error.message));
-    }
-    res.send().end();
 }
