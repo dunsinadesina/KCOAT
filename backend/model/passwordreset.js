@@ -21,11 +21,4 @@ const PasswordResetToken = sequelize.define('PasswordResetToken', {
         allowNull: false
     }
 });
-
-PasswordResetToken.sync().then((result) => {
-    console.log('PasswordResetToken model synced successfully', result);
-}).catch((err) => {
-    console.log('Error syncing PasswordResetToken model', err);
-});
-
 export { PasswordResetToken };
