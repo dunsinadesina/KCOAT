@@ -33,8 +33,8 @@ export const sendVerificationMail = (user) => {
     });
 };
 
-export const sendOrderConfirmationMail = async (customerEmail, orderId)=>{
-    try{
+export const sendOrderConfirmationMail = async (customerEmail, orderId) => {
+    try {
         const transporter = createMailTransporter();
         const mailOptions = {
             from: 'KCOAT <kcoatstyle@outlook.com>',
@@ -46,7 +46,25 @@ export const sendOrderConfirmationMail = async (customerEmail, orderId)=>{
 
         let info = await transporter.sendMail(mailOptions);
         console.log('Order confirmation mail has been sent: ', info.messageId);
-    }catch(error){
+    } catch (error) {
         console.log('Error in sending order confirmation email: ', error);
+    }
+}
+
+export const sendPasswordResetMail = async (customerEmail, emailToken) => {
+    try {
+        const transporter = createMailTransporter();
+        const mailOptions = {
+            from: 'KCOAT <kcoatstyle@outlook.com>',
+            to: customerEmail,
+            subject: 'Password Reset',
+            html: `<p>Hello 👋 ${customerEmail}, reset your password by clicking this link...</p>
+    <a href='https://kcoat.onrender.com/reset-password?emailToken=${emailToken}'>Reset Your Password</a>`
+        };
+
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Password reset mail has been sent: ', info.messageId);
+    } catch (error) {
+        console.log('Error in sending password reset mail: ', error);
     }
 }

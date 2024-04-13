@@ -69,8 +69,8 @@ export const checkoutPayment = async (req, res) => {
             },
             line_items,
             mode: 'payment',
-            success_url: 'http://localhost:6000/checkout-success',
-            cancel_url: 'http://localhost:6000/cart',
+            success_url: 'https://kcoat.onrender.com/checkout-success',
+            cancel_url: 'https://kcoat.onrender.com/cart',
         });
         //Store payment information in the database
         await Payment.create({

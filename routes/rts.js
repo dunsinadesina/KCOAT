@@ -7,7 +7,7 @@ import { login, logout } from '../backend/controllers/login.js';
 import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
 import { deleteProduct, getAllProducts, getMostPopularProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
-import { resetPassword } from '../backend/controllers/resetPassword.js';
+import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { isAdmin, sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
 // Define routes
@@ -16,6 +16,7 @@ router.post('/login', mid, login)
 router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
+router.post('/forgot-password', forgotPassword)
 router.post('/products', sanitizeProductFields, insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
@@ -50,4 +51,4 @@ router.get('/admin-dashboard', isAdmin, (req, res) => {
     res.json({ message: 'Admin dashboard accessed successfully' })
 })
 // router.get('/details', verifyAuth, details)
-router.get('/reset', resetPassword)
+router.put('/reset-password/:token', resetPassword)
