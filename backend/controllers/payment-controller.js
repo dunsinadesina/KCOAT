@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { Payment } from '../model/payment.js';
 import { sendOrderConfirmationMail } from './mail.js';
 import { createOrder, updateOrderStatus } from './order-controller.js';
-const stripe = Stripe('sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don');
+export const stripe = Stripe('sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don');
 
 // Function to update or create a Stripe customer
 const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
