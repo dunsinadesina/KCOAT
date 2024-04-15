@@ -2,11 +2,15 @@ import crypto from 'crypto';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { Customer } from '../model/customer.js';
+import { UserProfile } from '../model/userprofile.js';
 import { sendVerificationMail } from './mail.js';
 const secretKey = process.env.JWT_SECRET || 'Tech4Dev';
 
 export const insertCus = async (req, res) => {
     const { cusName, email, password } = req.body;
+
+    const [firstName, lastName] = cusName.split(' ');
+
     const schema = Joi.object({
         cusName: Joi.string().required(),
         email: Joi.string().email().required(),
@@ -30,7 +34,24 @@ export const insertCus = async (req, res) => {
             password,
             emailToken: crypto.randomBytes(64).toString('hex')
         });
-        return res.status(200).json({ message: "Customer created successfully", customer: newCustomer });
+
+        console.log('First Name:', firstName);
+        console.log('Last Name:', lastName);
+        const newUserProfile = await UserProfile.create({
+            firstName,
+            lastName,
+            email,
+            customerId: newCustomer.cusid,
+            state: 'default',
+            country: 'default',
+            address: 'default',
+            image: 'default'
+        });
+        return res.status(200).json({
+            message: 'Customer and User Profile created successfully',
+            customer: newCustomer,
+            userProfile: newUserProfile
+        });
     } catch (err) {
         console.log('Error creating customer:', err);
         return res.status(500).json({ error: 'Error in creating customer' })

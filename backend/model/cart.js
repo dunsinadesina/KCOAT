@@ -44,8 +44,5 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 CartItem.belongsTo(Product);
 
-// Sync models with the database
-Cart.sync();
-CartItem.sync();
 
 export { Cart, CartItem };

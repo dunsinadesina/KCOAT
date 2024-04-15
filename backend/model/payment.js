@@ -37,6 +37,5 @@ const Payment = sequelize.define('Payment', {
 
 Payment.belongsTo(Customer, { foreignKey: 'customerId' });
 
-Payment.sync()
 
 export { Payment };

@@ -8,6 +8,7 @@ import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrd
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
 import { deleteProduct, getAllProducts, getMostPopularProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
+import { getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
 import { isAdmin, sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
 // Define routes
@@ -46,6 +47,8 @@ router.post('/retrievecart', retrieveCart)
 router.delete('/cleanup', cleanUpOldCarts)
 router.post('/convertcarttoorder', convertCartToOrder)
 router.post('/create-checkout-session', checkoutPayment)
+router.get('/user-profile/:customerId', getUserProfile)
+router.put('/user-profile/:customerId', updateUserProfile)
 router.post('/webhook', express.raw({ type: 'application/json' }), webHook)
 router.get('/admin-dashboard', isAdmin, (req, res) => {
     res.json({ message: 'Admin dashboard accessed successfully' })
