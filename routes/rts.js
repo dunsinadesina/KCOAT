@@ -6,7 +6,7 @@ import { insertCus, verifyEmail } from '../backend/controllers/customer-controll
 import { login, logout } from '../backend/controllers/login.js';
 import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
-import { deleteProduct, getAllProducts, getMostPopularProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
+import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
 import { isAdmin, sanitizeProductFields } from '../backend/middleware/auth.js';
@@ -33,7 +33,8 @@ router.get('/most-popular-products', async (req, res) => {
         console.log('Error in handling request: ', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-})
+});
+router.get('/new-featured-products', getNewAndFeaturedProducts)
 router.post('/createorder', createOrder)
 router.get('/vieworders', viewOrders)
 router.get('/orders/:orderId', viewParticularOrder)

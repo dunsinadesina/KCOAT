@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
 //Define the function to insert new Product
@@ -165,5 +166,19 @@ export const getMostPopularProducts = async (req, res) => {
     } catch (error) {
         console.log('Error in fetching popular products: ', error);
         throw error;
+    }
+}
+
+export const getNewAndFeaturedProducts = async (req, res) => {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const newProducts = await Product.findAll({
+            where: { createdAt: { [Op.gte]: thirtyDaysAgo } }
+        });
+        res.status(200).json({ message: newProducts });
+    } catch (error) {
+        console.log('Error in fetching products: ', error);
+        res.status(500).json({ message: 'Error in fetching products' });
     }
 }

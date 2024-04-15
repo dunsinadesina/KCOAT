@@ -20,7 +20,7 @@ export const sendVerificationMail = (user) => {
         to: user.email,
         subject: "Verify your Email",
         html: `<p>Hello 👋 ${user.cusName}, verify your email by clicking this link...</p>
-    <a href='https://kcoat.onrender.com/verify-email?emailToken=${user.emailToken}'>Verify Your Email</a>`,
+    <a href='https://kcoat-project.onrender.com/verify-email?emailToken=${user.emailToken}'>Verify Your Email</a>`,
     };
 
 
@@ -59,7 +59,7 @@ export const sendPasswordResetMail = async (customerEmail, emailToken) => {
             to: customerEmail,
             subject: 'Password Reset',
             html: `<p>Hello 👋 ${customerEmail}, reset your password by clicking this link...</p>
-    <a href='https://kcoat.onrender.com/reset-password?emailToken=${emailToken}'>Reset Your Password</a>`
+    <a href='https://kcoat-project.onrender.com/reset-password?emailToken=${emailToken}'>Reset Your Password</a>`
         };
 
         let info = await transporter.sendMail(mailOptions);
