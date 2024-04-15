@@ -17,6 +17,16 @@ export const sanitizeProductFields = (req, res, next) => {
     next();
 }
 
+export const checkRole = (requiredRole) =>{
+    return (req, res, next)=>{
+        if (req.user&& req.user.role===requiredRole){
+            next();
+        }else{
+            res.status(403).json({message: 'Forbidden'});
+        }
+    }
+}
+
 export const authenticateToken = async (req, res, next) => {
     try {
         if (!req.headers.authorization) {
@@ -44,17 +54,5 @@ export const authenticateToken = async (req, res, next) => {
     } catch (error) {
         console.log('Error in authenticating middleware: ', error);
         res.status(500).json({ message: 'Unauthorized: Invalid token' })
-    }
-};
-
-export const isAdmin = async (req, res, next) => {
-    try {
-        if (!req.user || req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Unauthorized: Admin access required' });
-        }
-        next();
-    } catch (error) {
-        console.log('Error in isAdmin middleware: ', error);
-        res.status(500).json({ message: 'Internal Server Error' });
     }
 };

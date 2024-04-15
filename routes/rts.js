@@ -9,7 +9,7 @@ import { checkoutPayment, webHook } from '../backend/controllers/payment-control
 import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
-import { isAdmin, sanitizeProductFields } from '../backend/middleware/auth.js';
+import { checkRole, sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
@@ -51,8 +51,8 @@ router.post('/create-checkout-session', checkoutPayment)
 router.get('/user-profile/:customerId', getUserProfile)
 router.put('/user-profile/:customerId', updateUserProfile)
 router.post('/webhook', express.raw({ type: 'application/json' }), webHook)
-router.get('/admin-dashboard', isAdmin, (req, res) => {
-    res.json({ message: 'Admin dashboard accessed successfully' })
+router.get('/admin-dashboard', checkRole('admin'), (req, res)=>{
+    res.json({message: 'Admin dashboard accessed'})
 })
 // router.get('/details', verifyAuth, details)
 router.put('/reset-password/:token', resetPassword)
