@@ -45,10 +45,4 @@ const Order = sequelize.define('Order', {
 Order.belongsTo(Customer, { foreignKey: 'customerId' });
 Order.belongsTo(Product, { foreignKey: 'productId' });
 
-// Sync with db
-(async () => {
-    await sequelize.sync();
-    console.log("Order model synchronized with database");
-})();
-
 export { Order };

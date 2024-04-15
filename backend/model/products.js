@@ -39,7 +39,5 @@ const Product = sequelize.define("Products", {
         allowNull: false
     }
 })
-//Sync the Products model with the database
-Product.sync();
 
 export { Product };
