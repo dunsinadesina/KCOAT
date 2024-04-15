@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import { stripe } from './backend/controllers/payment-controller';
 import { router } from './routes/rts.js';
 const app = express();
-const { stripe } = require('./backend/controllers/payment-controller');
 // Set up middleware and routes
 app.use(cors());
 //app.use(cookieParser());
