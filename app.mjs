@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import { stripe } from './backend/controllers/payment-controller';
+import { stripe } from './backend/controllers/payment-controller.js';
 import { router } from './routes/rts.js';
 const app = express();
 // Set up middleware and routes
