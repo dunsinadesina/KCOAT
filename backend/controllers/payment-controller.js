@@ -70,7 +70,7 @@ export const checkoutPayment = async (req, res) => {
             line_items,
             mode: 'payment',
             success_url: 'https://kcoat-project.onrender.com/payment-success',
-            cancel_url: 'https://kcoat.onrender.com/cart',
+            cancel_url: 'https://kcoat-project.onrender.com/checkout',
         });
         //Store payment information in the database
         await Payment.create({
