@@ -25,7 +25,7 @@ const UserProfile = sequelize.define('UserProfile', {
     },
     phoneNumber:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     image:{
         type: DataTypes.STRING,
