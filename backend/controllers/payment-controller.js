@@ -78,10 +78,9 @@ export const checkoutPayment = async (req, res) => {
             success_url: 'https://kcoat-project.onrender.com/payment-success',
             cancel_url: 'https://kcoat-project.onrender.com/checkout',
             metadata:{
-                customerId: customerId,
+                user: stripeCustomerId,
             }
         });
-
         const customerId = session.metadata.customerId;
 
         //Store payment information in the database
