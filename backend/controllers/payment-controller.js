@@ -59,7 +59,10 @@ export const checkoutPayment = async (req, res) => {
                     name: Product.productName,
                     images: Product.productImage,
                     //ProductDescription: Product.ProductDescription,
-                    metadata: { id: Product.id },
+                    metadata: {
+                        user: customerId,
+                        cart: JSON.stringify(cartItems)
+                    },
                 },
                 unit_amount: Math.round(parseFloat(Product.productPrice.replace('N', '')) * 100),
             },
