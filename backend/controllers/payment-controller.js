@@ -35,7 +35,7 @@ const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
 
 export const checkoutPayment = async (req, res) => {
     try {
-        const { customerId, email, cartItems } = req.body;
+        const { email, cartItems } = req.body;
         // Ensure that req.body.cartItems is defined and is an array
         if (!req.body.cartItems || !Array.isArray(req.body.cartItems)) {
             throw new Error('Invalid cart items');
@@ -77,7 +77,13 @@ export const checkoutPayment = async (req, res) => {
             mode: 'payment',
             success_url: 'https://kcoat-project.onrender.com/payment-success',
             cancel_url: 'https://kcoat-project.onrender.com/checkout',
+            metadata:{
+                customerId: customerId,
+            }
         });
+
+        const customerId = session.metadata.customerId;
+
         //Store payment information in the database
         await Payment.create({
             customerId: customerId,
