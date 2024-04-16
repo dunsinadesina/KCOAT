@@ -40,9 +40,13 @@ export const checkoutPayment = async (req, res) => {
         if (!req.body.cartItems || !Array.isArray(req.body.cartItems)) {
             throw new Error('Invalid cart items');
         }
-        // Calculate the total amount based on the items in the cart
-        const totalAmount = req.body.cartItems.reduce((acc, item) => {
-            return acc + (item.price * item.cartQuantity);
+        const totalAmount = cartItems.reduce((acc, item) => {
+            // Extract numerical value from the price string and convert it to a number
+            const price = parseFloat(item.price.replace('N', ''));
+            if (isNaN(price) || isNaN(item.cartQuantity)) {
+                throw new Error('Invalid price or quantity');
+            }
+            return acc + (price * item.cartQuantity);
         }, 0);
 
         // Update or create a customer
