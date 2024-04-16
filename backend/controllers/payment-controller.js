@@ -1,6 +1,5 @@
 // This is your test secret API key.
 import Stripe from 'stripe';
-import { Payment } from '../model/payment.js';
 import { sendOrderConfirmationMail } from './mail.js';
 import { createOrder, updateOrderStatus } from './order-controller.js';
 export const stripe = Stripe('sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don');
@@ -57,7 +56,7 @@ export const checkoutPayment = async (req, res) => {
                 currency: "NGN",
                 product_data: {
                     name: Product.productName,
-                    images: [Product.productImag],
+                    images: [Product.productImage],
                     //ProductDescription: Product.ProductDescription,
                     metadata: {
                         productId: Product.id,
@@ -81,16 +80,16 @@ export const checkoutPayment = async (req, res) => {
                 user: stripeCustomerId,
             }
         });
-        const customerId = session.metadata.customerId;
+       // const customerId = session.metadata.customerId;
 
         //Store payment information in the database
-        await Payment.create({
-            customerId: customerId,
-            amount: totalAmount,
-            status: 'pending',
-            deliveryAddress: req.body.deliveryAddress,
-            deliveryDate: req.body.deliveryDate
-        });
+        // await Payment.create({
+        //     customerId: customerId,
+        //     amount: totalAmount,
+        //     status: 'pending',
+        //     deliveryAddress: req.body.deliveryAddress,
+        //     deliveryDate: req.body.deliveryDate
+        // });
 
         await sendOrderConfirmationMail(email, session.id);
 
