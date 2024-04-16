@@ -42,7 +42,7 @@ export const checkoutPayment = async (req, res) => {
         }
         const totalAmount = cartItems.reduce((acc, Product) => {
             // Extract numerical value from the price string and convert it to a number
-            const price = parseFloat(Product.ProductPrice.replace('N', ''));
+            const price = parseFloat(Product.productPrice.replace('N', ''));
             if (isNaN(price) || isNaN(Product.quantity)) {
                 throw new Error('Invalid price or quantity');
             }
@@ -56,12 +56,12 @@ export const checkoutPayment = async (req, res) => {
             price_data: {
                 currency: "NGN",
                 product_data: {
-                    ProductName: Product.ProductName,
-                    ProductImage: [Product.ProductImage],
-                    ProductDescription: Product.ProductDescription,
-                    metadata: { id: Product.Productid },
+                    name: Product.productName,
+                    images: Product.productImage,
+                    //ProductDescription: Product.ProductDescription,
+                    metadata: { id: Product.id },
                 },
-                unit_amount: Math.round(parseFloat(Product.ProductPrice.replace('N', '')) * 100),
+                unit_amount: Math.round(parseFloat(Product.productPrice.replace('N', '')) * 100),
             },
             quantity: Product.quantity,
         }));
