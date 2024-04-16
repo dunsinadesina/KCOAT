@@ -11,7 +11,7 @@ const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
         email: email,
         limit: 1,
     });
-    
+
     if (existingStripeCustomer.data.length > 0) {
         const stripeCustomerId = existingStripeCustomer.data[0].id;
         await stripe.customers.update(stripeCustomerId, {
@@ -42,7 +42,7 @@ export const checkoutPayment = async (req, res) => {
         }
         const totalAmount = cartItems.reduce((acc, item) => {
             // Extract numerical value from the price string and convert it to a number
-            const price = parseFloat(item.price.replace('N', ''));
+            const price = parseFloat(item.ProductPrice.replace('N', ''));
             if (isNaN(price) || isNaN(item.cartQuantity)) {
                 throw new Error('Invalid price or quantity');
             }
@@ -61,7 +61,7 @@ export const checkoutPayment = async (req, res) => {
                     description: item.description,
                     metadata: { id: item.id },
                 },
-                unit_amount: Math.round(item.price * 100),
+                unit_amount: Math.round(parseFloat(item.ProductPrice.replace('N', '')) * 100),
             },
             quantity: item.cartQuantity,
         }));
