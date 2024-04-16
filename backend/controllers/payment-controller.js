@@ -17,7 +17,7 @@ const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
         await stripe.customers.update(stripeCustomerId, {
             metadata: {
                 userId: userId,
-                cart: JSON.stringify(cartItems),
+                cartItemCount: cartItems.length.toString(),
             }
         });
         return stripeCustomerId;
@@ -26,7 +26,7 @@ const updateOrCreateStripeCustomer = async (email, userId, cartItems) => {
             email: email,
             metadata: {
                 userId: userId,
-                cart: JSON.stringify(cartItems)
+                cartItemCount: cartItems.length.toString()
             }
         });
         return newStripeCustomer.id;
@@ -57,11 +57,10 @@ export const checkoutPayment = async (req, res) => {
                 currency: "NGN",
                 product_data: {
                     name: Product.productName,
-                    images: Product.productImage,
+                    images: [Product.productImag],
                     //ProductDescription: Product.ProductDescription,
                     metadata: {
-                        user: customerId,
-                        cart: JSON.stringify(cartItems)
+                        productId: Product.id,
                     },
                 },
                 unit_amount: Math.round(parseFloat(Product.productPrice.replace('N', '')) * 100),
