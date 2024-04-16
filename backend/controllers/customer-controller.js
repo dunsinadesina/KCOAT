@@ -42,7 +42,7 @@ export const insertCus = async (req, res) => {
             lastName,
             email,
             customerId: newCustomer.cusid,
-            phoneNumber,
+            phoneNumber: 0,
             state: 'default',
             country: 'default',
             address: 'default',
