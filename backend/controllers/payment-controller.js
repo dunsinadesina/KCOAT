@@ -40,30 +40,30 @@ export const checkoutPayment = async (req, res) => {
         if (!req.body.cartItems || !Array.isArray(req.body.cartItems)) {
             throw new Error('Invalid cart items');
         }
-        const totalAmount = cartItems.reduce((acc, item) => {
+        const totalAmount = cartItems.reduce((acc, Product) => {
             // Extract numerical value from the price string and convert it to a number
-            const price = parseFloat(item.ProductPrice.replace('N', ''));
-            if (isNaN(price) || isNaN(item.cartQuantity)) {
+            const price = parseFloat(Product.ProductPrice.replace('N', ''));
+            if (isNaN(price) || isNaN(Product.quantity)) {
                 throw new Error('Invalid price or quantity');
             }
-            return acc + (price * item.cartQuantity);
+            return acc + (price * Product.quantity);
         }, 0);
 
         // Update or create a customer
         const stripeCustomerId = await updateOrCreateStripeCustomer(email, req.body.userId, cartItems);
 
-        const line_items = req.body.cartItems.map(item => ({
+        const line_items = req.body.cartItems.map(Product => ({
             price_data: {
                 currency: "NGN",
                 product_data: {
-                    name: item.name,
-                    images: [item.image],
-                    description: item.description,
-                    metadata: { id: item.id },
+                    ProductName: Product.ProductName,
+                    ProductImage: [Product.ProductImage],
+                    ProductDescription: Product.ProductDescription,
+                    metadata: { id: Product.Productid },
                 },
-                unit_amount: Math.round(parseFloat(item.ProductPrice.replace('N', '')) * 100),
+                unit_amount: Math.round(parseFloat(Product.ProductPrice.replace('N', '')) * 100),
             },
-            quantity: item.cartQuantity,
+            quantity: Product.quantity,
         }));
         //Create Stripe checkout session
         const session = await stripe.checkout.sessions.create({

@@ -162,7 +162,7 @@ export const getMostPopularProducts = async (req, res) => {
             ORDER BY totalQuantitySold DESC
             LIMIT 4;
             `, { type: sequelize.QueryTypes.SELECT });
-        return popularProducts;
+        return res.json(popularProducts);
     } catch (error) {
         console.log('Error in fetching popular products: ', error);
         throw error;
