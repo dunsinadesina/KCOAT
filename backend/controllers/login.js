@@ -33,11 +33,15 @@ const tokenBlacklist = new Set();
 
 export const logout = async (req, res) => {
     try {
+        if (!req.headers.authorization) {
+            return res.status(400).json({ message: 'Authorization header is missing' });
+        }
+        
         const token = req.headers.authorization.split(' ')[1];
         tokenBlacklist.add(token);
         return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
-        console.log('Error while loging out', error);
+        console.log('Error while logging out', error);
         return res.status(500).json({ message: 'An error occurred during logout' });
     }
 }
