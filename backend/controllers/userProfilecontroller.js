@@ -2,11 +2,10 @@ import { UserProfile } from '../model/userprofile.js';
 
 export const getUserProfile = async (req, res) => {
     const { cusid } = req.params;
-    const customerId = cusid;
     try {
         const userProfile = await UserProfile.findOne({
             where: {
-                customerId: customerId
+                customerId: cusid
             }
         });
         if (userProfile) {

@@ -37,7 +37,7 @@ export const logout = async (req, res) => {
         tokenBlacklist.add(token);
         return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
-        console.log('Error while loging out');
+        console.log('Error while loging out', error);
         return res.status(500).json({ message: 'An error occurred during logout' });
     }
 }
