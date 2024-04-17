@@ -8,9 +8,10 @@ export const getUserProfile = async (req, res) => {
                 customerId: customerId
             }
         });
-        if (!userProfile) {
+        if (userProfile) {
             res.status(200).json(userProfile);
         } else {
+            console.log('User profile not found')
             res.status(404).json({ error: 'User profile not found' });
         }
     } catch (error) {
