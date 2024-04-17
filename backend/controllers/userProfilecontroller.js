@@ -1,7 +1,7 @@
 import { UserProfile } from '../model/userprofile.js';
 
 export const getUserProfile = async (req, res) => {
-    const { customerId } = req.params;
+    const { customerId } = req.params.cusid;
     try {
         const userProfile = await UserProfile.findOne({
             where: {
