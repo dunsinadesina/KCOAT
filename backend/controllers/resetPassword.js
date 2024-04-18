@@ -40,7 +40,7 @@ export const resetPassword = async (req, res) => {
         if (!tokenRecord) {
             return res.status(403).json({ message: 'Invalid or expired token' });
         }
-        const user = await Customer.findOne({ where: { id: tokenRecord.cusid } });
+        const user = await Customer.findOne({ where: { cusid: tokenRecord.userId } });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
