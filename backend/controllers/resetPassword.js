@@ -30,9 +30,9 @@ export const forgotPassword = async (req, res) => {
 }
 
 export const resetPassword = async (req, res) => {
-    const { emailToken } = req.params;
+    const { token } = req.params;
     const { password } = req.body;
-    if (!emailToken || !password) {
+    if (!token || !password) {
         return res.status(400).json({ message: 'Token and Password are required' });
     }
     try {
