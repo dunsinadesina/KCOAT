@@ -78,7 +78,7 @@ export const updateUserProfile = async (req, res) => {
             if (!userProfile) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            if (userProfile.image !== defaultAvatarPath) {
+            if (userProfile.image !== defaultAvatarPath && fs.existsSync(userProfile.image)) {
                 fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
