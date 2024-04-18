@@ -40,6 +40,10 @@ export const resetPassword = async (req, res) => {
         if (!tokenRecord) {
             return res.status(403).json({ message: 'Invalid or expired token' });
         }
+        const user = await Customer.findOne({ where: { id: tokenRecord.cusid } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         await user.update({ password: hashedPassword });
         await tokenRecord.destroy();
