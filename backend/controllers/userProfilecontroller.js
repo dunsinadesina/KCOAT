@@ -1,4 +1,16 @@
+import multer from 'multer';
 import { UserProfile } from '../model/userprofile.js';
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '/uploads');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage }).single('image');
 
 export const getUserProfile = async (req, res) => {
     const { cusid } = req.params;
@@ -11,7 +23,7 @@ export const getUserProfile = async (req, res) => {
         if (userProfile) {
             res.status(200).json(userProfile);
         } else {
-            console.log('User profile not found')
+            console.log('User profile not found');
             res.status(404).json({ error: 'User profile not found' });
         }
     } catch (error) {
@@ -30,7 +42,7 @@ export const updateUserProfile = async (req, res) => {
         email: req.body.email,
         country: req.body.country,
         newPassword: req.body.newPassword,
-        image: req.body.image
+        image: req.file ? req.file.path : null
     }
     try {
         const userProfile = await UserProfile.findOne({
