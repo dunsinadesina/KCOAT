@@ -1,5 +1,9 @@
+import fs from 'fs';
 import multer from 'multer';
+import path from 'path';
 import { UserProfile } from '../model/userprofile.js';
+
+const defaultAvatarPath = path.join(__dirname, 'default_image.jpeg')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -59,7 +63,7 @@ export const updateUserProfile = async (req, res) => {
             email: req.body.email,
             country: req.body.country,
             newPassword: req.body.newPassword,
-            image: req.file ? req.file.path : null
+            image: req.file ? req.file.path : defaultAvatarPath
         }
         try {
             const userProfile = await UserProfile.findOne({
@@ -69,6 +73,9 @@ export const updateUserProfile = async (req, res) => {
             });
             if (!userProfile) {
                 return res.status(404).json({ error: 'User not found' });
+            }
+            if (userProfile.image !== defaultAvatarPath){
+                fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
             res.status(200).json(updatedUserData);
