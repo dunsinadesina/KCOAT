@@ -3,6 +3,7 @@ export const router = express.Router();
 //Import middleware and controllers
 import { addToCart, checkOut, cleanUpOldCarts, retrieveCart } from '../backend/controllers/cart-controller.js';
 import { insertCus, verifyEmail } from '../backend/controllers/customer-controller.js';
+import { login, logout } from '../backend/controllers/login.js';
 import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
 import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
@@ -10,7 +11,6 @@ import { forgotPassword, resetPassword } from '../backend/controllers/resetPassw
 import { getAllUserProfiles, getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
 import { checkRole, sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
-import , login, logout } from '../backend/controllers/login.js';
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)

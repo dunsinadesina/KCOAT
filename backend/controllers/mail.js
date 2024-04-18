@@ -59,7 +59,7 @@ export const sendPasswordResetMail = async (customerEmail, emailToken) => {
             to: customerEmail,
             subject: 'Password Reset',
             html: `<p>Hello 👋 ${customerEmail}, reset your password by clicking this link...</p>
-    <a href='https://kcoat-project.onrender.com/reset-password?emailToken=${emailToken}'>Reset Your Password</a>`
+    <a href='https://kcoat.netlify.app/Reset?emailToken=${emailToken}'>Reset Your Password</a>`
         };
 
         let info = await transporter.sendMail(mailOptions);
