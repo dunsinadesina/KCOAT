@@ -48,8 +48,6 @@ export const logout = async (req, res) => {
         const userProfile = await UserProfile.findOne({ where: { email } });
         if (userProfile) {
             await userProfile.update({ isLoggedIn: false });
-            const token = req.headers.authorization.split(' ')[1];
-            tokenBlacklist.add(token);
             return res.status(200).json({ message: 'Logout successful' });
         } else {
             return res.status(404).json({ error: 'User not found' });
