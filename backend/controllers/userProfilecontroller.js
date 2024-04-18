@@ -1,9 +1,13 @@
 import fs from 'fs';
 import multer from 'multer';
-import path from 'path';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import { UserProfile } from '../model/userprofile.js';
 
-const defaultAvatarPath = path.join(__dirname, 'default_image.jpeg')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const defaultAvatarPath = join(__dirname, 'default_image.jpeg')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -16,13 +20,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('image');
 
-export const getAllUserProfiles = async (req, res)=>{
-    try{
+export const getAllUserProfiles = async (req, res) => {
+    try {
         const userProfiles = await UserProfile.findAll();
         res.status(200).json(userProfiles);
-    }catch(error){
+    } catch (error) {
         console.log('Error getting all user profiles', error);
-        res.status(500).json({error: 'Internal Server error'})
+        res.status(500).json({ error: 'Internal Server error' })
     }
 }
 
@@ -74,7 +78,7 @@ export const updateUserProfile = async (req, res) => {
             if (!userProfile) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            if (userProfile.image !== defaultAvatarPath){
+            if (userProfile.image !== defaultAvatarPath) {
                 fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
