@@ -50,6 +50,11 @@ const UserProfile = sequelize.define('UserProfile', {
     country: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    isLoggedIn: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 })
 
