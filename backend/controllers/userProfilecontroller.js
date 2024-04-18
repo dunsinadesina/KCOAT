@@ -33,7 +33,7 @@ export const getUserProfile = async (req, res) => {
 }
 
 export const updateUserProfile = async (req, res) => {
-    const { customerId } = req.params;
+    const { cusid } = req.params;
     const updatedUserData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -47,7 +47,7 @@ export const updateUserProfile = async (req, res) => {
     try {
         const userProfile = await UserProfile.findOne({
             where: {
-                customerId: customerId
+                customerId: cusid
             }
         });
         if (!customerId) {
