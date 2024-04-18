@@ -1,11 +1,10 @@
 import express from 'express';
 export const router = express.Router();
 //Import middleware and controllers
-import { adminLogin } from '../backend/controllers/admin-controller.js';
-import { addToCart, checkOut, cleanUpOldCarts, retrieveCart } from '../backend/controllers/cart-controller.js';
+import { registerAdmin } from '../backend/controllers/admin-controller.js';
 import { insertCus, verifyEmail } from '../backend/controllers/customer-controller.js';
 import { login, logout } from '../backend/controllers/login.js';
-import { calcOrderTotal, cancelOrder, convertCartToOrder, createOrder, updateOrder, updateOrderStatus, viewOrders, viewParticularOrder } from '../backend/controllers/order-controller.js';
+import { orderProduct, restockProduct } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
 import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
@@ -15,7 +14,7 @@ import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)
-router.post('/admin-login', adminLogin)
+router.post('/admin-login', registerAdmin)
 router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
@@ -37,18 +36,8 @@ router.get('/most-popular-products', async (req, res) => {
     }
 });
 router.get('/new-featured-products', getNewAndFeaturedProducts)
-router.post('/createorder', createOrder)
-router.get('/vieworders', viewOrders)
-router.get('/orders/:orderId', viewParticularOrder)
-router.put('/orders/:orderId', updateOrder)
-router.put('/orders/:orderId/status', updateOrderStatus)
-router.delete('/orders/:orderId', cancelOrder)
-router.get('/orders/:orderId/calculateTotal', calcOrderTotal)
-router.post('/insertintocart', addToCart)
-router.delete('/checkout', checkOut)
-router.post('/retrievecart', retrieveCart)
-router.delete('/cleanup', cleanUpOldCarts)
-router.post('/convertcarttoorder', convertCartToOrder)
+router.post('/createorder', orderProduct)
+router.post('/restock', restockProduct)
 router.post('/create-checkout-session', checkoutPayment)
 router.get('/user-profile', getAllUserProfiles)
 router.get('/user-profile/:cusid', getUserProfile)

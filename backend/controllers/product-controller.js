@@ -1,39 +1,56 @@
+import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage }).single('ProductImage');
+
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
+    upload(req, res, async function (error) {
+        if (error instanceof multer.MulterError) {
+            return res.status(500).json({ error: 'File upload error' });
+        } else if (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    })
+    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body;
     try {
-
-        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body; //Create a new instance of the model with data
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !ProductImage || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
-        else {
-            const existingProduct = await Product.findOne({ where: { ProductName } });
-            if (existingProduct) {
-                return res.status(400).json({ message: 'Product with the same name already exists' });
-            } else {
-                //Create new product record using the product model
-                const newProduct = await Product.create({
-                    ProductName,
-                    ProductPrice,
-                    ProductDescription,
-                    ProductCategory,
-                    SubCategory,
-                    ProductImage,
-                    Quantity,
-                    ProductSize
-                });
-                console.log("New product created");
-                res.status(201).json({ message: 'New Product created', result: newProduct });
-            }
+        else { }
+        const existingProduct = await Product.findOne({ where: { ProductName } });
+        if (existingProduct) {
+            return res.status(400).json({ message: 'Product with the same name already exists' });
+        } else {
+            //Create new product record using the product model
+            const newProduct = await Product.create({
+                ProductName,
+                ProductPrice,
+                ProductDescription,
+                ProductCategory,
+                SubCategory,
+                ProductImage: req.file ? req.file.path : null,
+                Quantity,
+                ProductSize
+            });
+            console.log("New product created");
+            res.status(201).json({ message: 'New Product created', result: newProduct });
         }
-
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error', error })
-    }
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error', error })
+}
 }
 //function to get all products from database
 export const getAllProducts = async (req, res) => {

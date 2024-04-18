@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { Admin } from "../model/admin.js";
 const secret = process.env.JWT_SECRET || "Tech4Dev";
 
 // Middleware to sanitize product size and price fields
@@ -16,16 +15,22 @@ export const sanitizeProductFields = (req, res, next) => {
 
 //middleware to authenticate admin
 export const adminAuthMiddleware = async (req, res, next) => {
+    const secret = process.env.JWT_SECRET || "Tech4Dev";
     const token = req.header('Authorization');
     if (!token) {
-        return res.status(400).json({ message: 'No token, authorization denied' });
+        return res.status(400).json({ message: 'No token provided, authorization denied' });
     }
     try {
-        const decoded = jwt.verify(token, secret);
-        req.admin = await Admin.findByPk(decoded.id);
+        const decoded = jwt.verify(token, secret, { algorithms: ['HS256'] });
         next();
     } catch (error) {
-        console.log('Admin authorization middleware error: ', error);
-        res.status(401).json({ message: 'Token not valid' });
+        if (error instanceof jwt.TokenExpiredError) {
+            return res.status(401).json({ message: 'Token expired, please log in again' });
+        } else if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({ message: 'Invalid token, please log in again' });
+        } else {
+            console.error('Admin authorization middleware error:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
     }
 }

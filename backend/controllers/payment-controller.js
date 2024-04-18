@@ -1,7 +1,6 @@
 // This is your test secret API key.
 import Stripe from 'stripe';
 import { sendOrderConfirmationMail } from './mail.js';
-import { createOrder, updateOrderStatus } from './order-controller.js';
 export const stripe = Stripe('sk_test_51P1c0BRsLNFrfbLCMKUHvJcayKbcYSnFsFskOjkHmQvEQrhLIyzfdTKvzwIsPAuh1ortsZQ94PAY91Riko6irUoT00Dpdx7Don');
 
 // Function to update or create a Stripe customer
