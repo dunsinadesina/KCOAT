@@ -67,7 +67,7 @@ export const updateUserProfile = async (req, res) => {
             email: req.body.email,
             country: req.body.country,
             newPassword: req.body.newPassword,
-            image: req.file ? req.file.path : defaultAvatarPath
+            image: req.file ? req.file.path : null
         }
         try {
             const userProfile = await UserProfile.findOne({
@@ -82,7 +82,7 @@ export const updateUserProfile = async (req, res) => {
                 fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
-            res.status(200).json(updatedUserData);
+            res.status(200).json({...updatedUserData, defaultAvatarPath});
         } catch (error) {
             console.log('Error updating user information', error);
             res.status(500).json({ error: 'Error updating customer information' });
