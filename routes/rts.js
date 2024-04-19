@@ -9,7 +9,7 @@ import { checkoutPayment, webHook } from '../backend/controllers/payment-control
 import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { getAllUserProfiles, getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
-import { adminAuthMiddleware, sanitizeProductFields } from '../backend/middleware/auth.js';
+import { sanitizeProductFields } from '../backend/middleware/auth.js';
 import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
@@ -25,7 +25,7 @@ router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
 router.put('/products/:Productid', sanitizeProductFields, updateProductById)
-router.delete('products/:Productid', adminAuthMiddleware, deleteProduct)
+router.delete('products/:Productid', deleteProduct)
 router.get('/most-popular-products', async (req, res) => {
     try {
         const popularProducts = await getMostPopularProducts();
