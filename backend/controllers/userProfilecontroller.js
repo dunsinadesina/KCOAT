@@ -39,6 +39,9 @@ export const getUserProfile = async (req, res) => {
             }
         });
         if (userProfile) {
+            if (!userProfile.image){
+                userProfile.image = defaultAvatarPath;
+            }
             res.status(200).json(userProfile);
         } else {
             console.log('User profile not found');
@@ -83,7 +86,7 @@ export const updateUserProfile = async (req, res) => {
                 fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
-            res.status(200).json({ updatedUserData });
+            res.status(200).json(updatedUserData);
         } catch (error) {
             console.log('Error updating user information', error);
             res.status(500).json({ error: 'Error updating customer information' });
