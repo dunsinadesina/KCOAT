@@ -83,7 +83,7 @@ export const updateUserProfile = async (req, res) => {
                 fs.unlinkSync(userProfile.image);
             }
             await userProfile.update(updatedUserData);
-            res.status(200).json({ ...updatedUserData, defaultAvatarPath });
+            res.status(200).json({ updatedUserData });
         } catch (error) {
             console.log('Error updating user information', error);
             res.status(500).json({ error: 'Error updating customer information' });
