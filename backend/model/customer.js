@@ -53,12 +53,5 @@ Customer.init({
         }
     });
 
-// Sync the Customer model with the database
-Customer.sync().then((result) => {
-    console.log('Customer model synced successfully', result);
-}).catch((err) => {
-    console.log('Error syncing Customer model', err);
-});
-
 // Export Customer module
 export { Customer };
