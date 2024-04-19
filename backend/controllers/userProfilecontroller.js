@@ -68,7 +68,7 @@ export const updateUserProfile = async (req, res) => {
             country: req.body.country,
             newPassword: req.body.newPassword,
             phoneNumber: req.body.phoneNumber,
-            image: req.file ? req.filepath : defaultAvatarPath
+            image: req.file ? req.file.path : defaultAvatarPath
         }
         try {
             const userProfile = await UserProfile.findOne({
