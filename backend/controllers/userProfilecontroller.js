@@ -7,7 +7,7 @@ import { UserProfile } from '../model/userprofile.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const defaultAvatarPath = join(__dirname, 'default_image.jpeg')
+const defaultAvatarPath = join(__dirname, 'backend/controllers/default_image.jpeg')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
