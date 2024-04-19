@@ -7,7 +7,7 @@ import { UserProfile } from '../model/userprofile.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const defaultAvatarPath = join(__dirname, 'backend/controllers/default_image.jpeg')
+const defaultAvatarPath = join(__dirname, 'default_image.jpeg')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -42,6 +42,7 @@ export const getUserProfile = async (req, res) => {
             if (!userProfile.image){
                 userProfile.image = defaultAvatarPath;
             }
+            console.log(defaultAvatarPath);
             res.status(200).json(userProfile);
         } else {
             console.log('User profile not found');
