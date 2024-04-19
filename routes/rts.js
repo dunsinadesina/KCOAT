@@ -19,12 +19,12 @@ router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
 router.post('/forgot-password', forgotPassword)
-router.post('/products', sanitizeProductFields, adminAuthMiddleware, insertProduct)
+router.post('/products', sanitizeProductFields, insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
-router.put('/products/:Productid', sanitizeProductFields, adminAuthMiddleware, updateProductById)
+router.put('/products/:Productid', sanitizeProductFields, updateProductById)
 router.delete('products/:Productid', adminAuthMiddleware, deleteProduct)
 router.get('/most-popular-products', async (req, res) => {
     try {
