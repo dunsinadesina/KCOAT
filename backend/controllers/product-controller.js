@@ -1,6 +1,4 @@
-import FormData from 'form-data';
 import multer from 'multer';
-import fetch from 'node-fetch';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
@@ -16,25 +14,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('ProductImage');
 
-const uploadToImgur = async (filePath) => {
-    try {
-        const formData = new FormData();
-        formData.append('image', fs.createReadStream(filePath));
-        const imgurRes = await fetch('https://api.imgur.com/3/image', {
-            method: 'POST',
-            headers: {
-                Authorization: '3627df7ef3b2b5d'
-            },
-            body: formData
-        });
-        const imgurData = await imgurRes.json();
-        return imgurData.data.link;
-    } catch (error) {
-        console.log('Error uploading image to imgur', error);
-        throw new Error('Error uploading image to imgur');
-    }
-}
-
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
     upload(req, res, async function (error) {
@@ -47,7 +26,7 @@ export const insertProduct = async (req, res) => {
     const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body;
 
     try {
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || ProductImage) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         const existingProduct = await Product.findOne({ where: { ProductName } });
