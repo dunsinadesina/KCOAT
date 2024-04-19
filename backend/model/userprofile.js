@@ -58,10 +58,4 @@ const UserProfile = sequelize.define('UserProfile', {
     }
 })
 
-UserProfile.sync().then((result) => {
-    console.log('User Profile model synced successfully', result);
-}).catch((err) => {
-    console.log('Error syncing User Profile model', err);
-});
-
 export { UserProfile };
