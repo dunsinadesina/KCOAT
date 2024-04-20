@@ -1,10 +1,30 @@
 import crypto from 'crypto';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import { Customer } from '../model/customer.js';
 import { UserProfile } from '../model/userprofile.js';
 import { sendVerificationMail } from './mail.js';
 const secretKey = process.env.JWT_SECRET || 'Tech4Dev';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const defaultAvatarPath = join(__dirname, 'default_image.jpeg')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage }).single('image');
+
 
 export const insertCus = async (req, res) => {
     const { cusName, email, password } = req.body;
@@ -43,10 +63,10 @@ export const insertCus = async (req, res) => {
             email,
             customerId: newCustomer.cusid,
             phoneNumber: 0,
-            state: 'default',
-            country: 'default',
-            address: 'default',
-            image: 'default'
+            state: ' ',
+            country: ' ',
+            address: ' ',
+            image: defaultAvatarPath
         });
         return res.status(200).json({
             message: 'Customer and User Profile created successfully',
