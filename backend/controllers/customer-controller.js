@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { Customer } from '../model/customer.js';
