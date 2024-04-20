@@ -25,7 +25,7 @@ router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
 router.get('/products/:category/:subcategory', getProductBySubCategory)
 router.put('/products/:Productid', sanitizeProductFields, updateProductById)
-router.delete('products/:Productid', deleteProduct)
+router.delete('/products/:Productid', deleteProduct)
 router.get('/most-popular-products', async (req, res) => {
     try {
         const popularProducts = await getMostPopularProducts();
