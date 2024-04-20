@@ -1,7 +1,7 @@
 import express from 'express';
 export const router = express.Router();
 //Import middleware and controllers
-import { registerAdmin } from '../backend/controllers/admin-controller.js';
+import { adminLogin } from '../backend/controllers/admin-controller.js';
 import { insertCus, verifyEmail } from '../backend/controllers/customer-controller.js';
 import { login, logout } from '../backend/controllers/login.js';
 import { orderProduct, restockProduct } from '../backend/controllers/order-controller.js';
@@ -14,7 +14,7 @@ import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
 router.post('/login', mid, login)
-router.post('/admin-login', registerAdmin)
+router.post('/admin-login', adminLogin)
 router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
