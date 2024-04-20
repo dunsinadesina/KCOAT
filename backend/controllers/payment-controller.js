@@ -82,13 +82,13 @@ export const checkoutPayment = async (req, res) => {
        // const customerId = session.metadata.customerId;
 
         //Store payment information in the database
-        await Payment.create({
-            customerId: customerId,
-            amount: totalAmount,
-            status: 'ordered',
-            deliveryAddress: req.body.deliveryAddress,
-            deliveryDate: req.body.deliveryDate
-        });
+        // await Payment.create({
+        //     customerId: customerId,
+        //     amount: totalAmount,
+        //     status: 'ordered',
+        //     deliveryAddress: req.body.deliveryAddress,
+        //     deliveryDate: req.body.deliveryDate
+        // });
 
         await sendOrderConfirmationMail(email, session.id);
 
