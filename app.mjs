@@ -15,6 +15,6 @@ app.use('/', router);
 
 // Start the server
 app.listen(6000, () => {
-    console.log(`SERVER RUNNING, AdminJS started on https://kcoat.onrender.com`);
+    console.log(`SERVER RUNNING, Server started on https://kcoat.onrender.com`);
 });
 //}
