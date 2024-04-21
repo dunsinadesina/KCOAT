@@ -23,7 +23,7 @@ export const insertProduct = async (req, res) => {
             return res.status(500).json({ error: error.message })
         }
     })
-    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, ProductSize, Quantity } = req.body;
+    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, Quantity } = req.body;
 
     try {
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || ProductImage) {
@@ -42,7 +42,6 @@ export const insertProduct = async (req, res) => {
             SubCategory,
             ProductImage: null,
             Quantity,
-            ProductSize
         });
         console.log("New product created");
         res.status(201).json({ message: 'New Product created', result: newProduct });
@@ -110,7 +109,7 @@ export const getProductBySubCategory = async (req, res) => {
 //function to update an existing product by its ID
 export const updateProductById = async (req, res) => {
     const Productid = parseInt(req.params.Productid);
-    const { ProductName, ProductQuantity, ProductSize, ProductCategory, SubCategory, ProductPrice, imageUrl } = req.body;
+    const { ProductName, ProductQuantity, ProductCategory, SubCategory, ProductPrice, imageUrl } = req.body;
 
     try {
         const product = await Product.findByPk(Productid);
@@ -121,7 +120,6 @@ export const updateProductById = async (req, res) => {
         // Update product fields
         product.ProductName = ProductName;
         product.ProductQuantity = ProductQuantity;
-        product.ProductSize = ProductSize;
         product.ProductCategory = ProductCategory;
         product.SubCategory = SubCategory;
         product.ProductPrice = ProductPrice;
