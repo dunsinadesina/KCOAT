@@ -23,10 +23,13 @@ export const insertProduct = async (req, res) => {
             return res.status(500).json({ error: error.message })
         }
     })
-    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, ProductImage, Quantity } = req.body;
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
 
     try {
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || ProductImage) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         const existingProduct = await Product.findOne({ where: { ProductName } });
@@ -40,7 +43,7 @@ export const insertProduct = async (req, res) => {
             ProductDescription,
             ProductCategory,
             SubCategory,
-            ProductImage: null,
+            ProductImage: req.file.path,
             Quantity,
         });
         console.log("New product created");
