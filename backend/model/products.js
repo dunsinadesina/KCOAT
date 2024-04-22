@@ -10,29 +10,31 @@ const Product = sequelize.define("Products", {
     },
     ProductName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     ProductDescription: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     ProductPrice: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: true
     },
     ProductCategory: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: true
     },
     ProductImage: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: true
     },
     Quantity:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     SubCategory:{
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 })
 
