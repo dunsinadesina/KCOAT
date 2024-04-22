@@ -112,7 +112,7 @@ export const getProductBySubCategory = async (req, res) => {
 //function to update an existing product by its ID
 export const updateProductById = async (req, res) => {
     const Productid = parseInt(req.params.Productid);
-    const { ProductName, Quantity, ProductCategory, SubCategory, ProductPrice, imageUrl } = req.body;
+    const { ProductName, Quantity, ProductCategory, SubCategory, ProductPrice, imageUrl, ProductDescription } = req.body;
 
     try {
         const product = await Product.findByPk(Productid);
@@ -127,6 +127,7 @@ export const updateProductById = async (req, res) => {
         product.SubCategory = SubCategory;
         product.ProductPrice = ProductPrice;
         product.imageUrl = imageUrl;
+        product.ProductDescription = ProductDescription;
 
         // Save the updated product to the database
         await product.save();
