@@ -6,7 +6,7 @@ import { insertCus, verifyEmail } from '../backend/controllers/customer-controll
 import { login, logout } from '../backend/controllers/login.js';
 import { orderProduct, restockProduct } from '../backend/controllers/order-controller.js';
 import { checkoutPayment, webHook } from '../backend/controllers/payment-controller.js';
-import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById, uploadImage } from '../backend/controllers/product-controller.js';
+import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeaturedProducts, getProductByCategory, getProductById, getProductBySubCategory, insertProduct, updateProductById } from '../backend/controllers/product-controller.js';
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { getAllUserProfiles, getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
 import { sanitizeProductFields } from '../backend/middleware/auth.js';
@@ -19,7 +19,7 @@ router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
 router.post('/forgot-password', forgotPassword)
-router.post('/products',uploadImage ,sanitizeProductFields, insertProduct)
+router.post('/products', sanitizeProductFields, insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);

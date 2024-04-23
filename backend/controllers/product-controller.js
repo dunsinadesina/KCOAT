@@ -36,7 +36,8 @@ export const insertProduct = async (req, res) => {
     } catch (error) {
         console.log("Error in creating product: ", error);
         res.status(500).send(error);
-    };
+    }
+}
 
 //function to get all products from database
 export const getAllProducts = async (req, res) => {
