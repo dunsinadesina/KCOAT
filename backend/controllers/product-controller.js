@@ -1,9 +1,16 @@
 import axios from 'axios';
+import cloudinary from 'cloudinary';
 import FormData from 'form-data';
 import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
+
+cloudinary.config({
+    cloud_name: 'dcqybedxj',
+    api_key: '732766964563482',
+    api_secret: 's7pTrfa-sme1oMHlf0ERlbUVoUw'
+});
 
 //multer configuration
 const storage = multer.memoryStorage();
@@ -39,15 +46,17 @@ export const insertProduct = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
+    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity,ProductImage } = req.body;
 
     try {
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || !ProductImage) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
 
         //upload to cloudinary
-        const imageUrl = await uploadImageToCloudinary(req.file.buffer);
+        const imageUrl = await cloudinary.uploader.upload(ProductImage,{
+            folder: 'products'
+        })
         const existingProduct = await Product.findOne({ where: { ProductName } });
         if (existingProduct) {
             return res.status(400).json({ message: 'Product with the same name already exists' });
@@ -59,7 +68,10 @@ export const insertProduct = async (req, res) => {
             ProductDescription,
             ProductCategory,
             SubCategory,
-            ProductImage: imageUrl,
+            ProductImage: {
+                public_id: imageUrl.public_id,
+                url: imageUrl.secure_url
+            },
             Quantity,
         });
         console.log("New product created");
