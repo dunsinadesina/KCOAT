@@ -5,41 +5,46 @@ import cloudinaryV2 from './cloudinary.js';
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
-    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity,ProductImage } = req.body;
+    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity, ProductImage } = req.body;
 
     try {
+        // Check if all required fields are provided
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || !ProductImage) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
 
-        //upload to cloudinary
-        const result = await cloudinaryV2.uploader.upload(ProductImage, {
+        // Upload image to Cloudinary
+        const cloudinaryResponse = await cloudinaryV2.uploader.upload(ProductImage, {
             folder: 'products'
-        })
+        });
+
+        // Check if a product with the same name already exists
         const existingProduct = await Product.findOne({ where: { ProductName } });
         if (existingProduct) {
             return res.status(400).json({ message: 'Product with the same name already exists' });
         }
-        //Create new product record using the product model
+
+        // Create new product record using the product model
         const newProduct = await Product.create({
             ProductName,
             ProductPrice,
             ProductDescription,
             ProductCategory,
             SubCategory,
-            ProductImage: {
-                public_id: result.public_id,
-                url: result.secure_url
-            },
             Quantity,
+            ProductImage: {
+                public_id: cloudinaryResponse.public_id,
+                url: cloudinaryResponse.secure_url
+            },
         });
+
         console.log("New product created");
-        res.status(201).json({ message: 'New Product created', result: newProduct });
+        return res.status(201).json({ message: 'New Product created', result: newProduct });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Internal Server Error', error })
+        return res.status(500).json({ message: 'Internal Server Error', error });
     }
-}
+};
 //function to get all products from database
 export const getAllProducts = async (req, res) => {
     try {
