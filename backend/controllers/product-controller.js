@@ -1,8 +1,15 @@
+import { v2 as cloudinaryV2 } from 'cloudinary';
 import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
-import cloudinaryV2 from './cloudinary.js';
+
+// Configure Cloudinary v2
+cloudinaryV2.config({
+    cloud_name: 'dcqybedxj',
+    api_key: '732766964563482',
+    api_secret: 's7pTrfa-sme1oMHlf0ERlbUVoUw'
+});
 
 // Set up multer storage
 const storage = multer.diskStorage({
