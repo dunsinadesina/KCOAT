@@ -7,14 +7,14 @@ import cloudinaryV2 from './cloudinary.js';
 // Set up multer storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/');
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname);
+        cb(null, file.originalname);
     }
-  });
+});
 
-  // Create the multer instance with the storage configuration
+// Create the multer instance with the storage configuration
 const upload = multer({ storage: storage }).single('ProductImage');
 
 // Middleware function to handle file uploads
@@ -35,7 +35,7 @@ export const insertProduct = async (req, res) => {
         const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
         const ProductImage = req.file;
         // Check if all required fields are provided
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity ) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
 
