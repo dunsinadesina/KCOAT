@@ -17,7 +17,10 @@ export const insertProduct = async (req, res) => {
         const cloudinaryResponse = await cloudinaryV2.uploader.upload(ProductImage, {
             folder: 'products'
         });
-
+        if (!cloudinaryResponse) {
+            console.log('Error uploading to cloudinary');
+            return res.status(401).json({ message: 'Error uploading image to Cloudinary' });
+        }
         // Check if a product with the same name already exists
         const existingProduct = await Product.findOne({ where: { ProductName } });
         if (existingProduct) {
