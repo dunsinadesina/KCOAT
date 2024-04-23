@@ -1,18 +1,31 @@
+import axios from 'axios';
+import FormData from 'form-data';
 import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+//multer configuration
+const storage = multer.memoryStorage();
+const upload=multer({storage: storage}).single('file');
 
-const upload = multer({ storage: storage }).single('ProductImage');
+//cloudinary configuration
+const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dcqybedxj/image/upload';
+const cloudinaryPreset = 'wq90ysos';
+
+const uploadImageToCloudinary=async (imageBuffer)=>{
+    try {
+        const formData = new FormData();
+        formData.append('file',imageBuffer);
+        formData.append('upload_preset',cloudinaryPreset);
+        const cloudinaryRes = await axios.post(cloudinaryUrl, formData,{
+            headers: formData.getHeaders()
+        });
+        return cloudinaryRes.data.secure_url;
+    } catch (error) {
+        throw new Error ('Failed to upload image to cloudinary');
+    }
+}
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
@@ -32,6 +45,9 @@ export const insertProduct = async (req, res) => {
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
+
+        //upload to cloudinary
+        const imageUrl = await uploadImageToCloudinary(req.file.buffer);
         const existingProduct = await Product.findOne({ where: { ProductName } });
         if (existingProduct) {
             return res.status(400).json({ message: 'Product with the same name already exists' });
@@ -43,7 +59,7 @@ export const insertProduct = async (req, res) => {
             ProductDescription,
             ProductCategory,
             SubCategory,
-            ProductImage: req.file.path,
+            ProductImage: imageUrl,
             Quantity,
         });
         console.log("New product created");
