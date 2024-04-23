@@ -1,51 +1,10 @@
-import axios from 'axios';
-import cloudinary from 'cloudinary';
-import FormData from 'form-data';
-import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
-
-cloudinary.config({
-    cloud_name: 'dcqybedxj',
-    api_key: '732766964563482',
-    api_secret: 's7pTrfa-sme1oMHlf0ERlbUVoUw'
-});
-
-//multer configuration
-const storage = multer.memoryStorage();
-const upload=multer({storage: storage}).single('file');
-
-//cloudinary configuration
-const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dcqybedxj/image/upload';
-const cloudinaryPreset = 'wq90ysos';
-
-const uploadImageToCloudinary=async (imageBuffer)=>{
-    try {
-        const formData = new FormData();
-        formData.append('file',imageBuffer);
-        formData.append('upload_preset',cloudinaryPreset);
-        const cloudinaryRes = await axios.post(cloudinaryUrl, formData,{
-            headers: formData.getHeaders()
-        });
-        return cloudinaryRes.data.secure_url;
-    } catch (error) {
-        throw new Error ('Failed to upload image to cloudinary');
-    }
-}
+import cloudinary from './cloudinary.js';
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
-    upload(req, res, async function (error) {
-        if (error instanceof multer.MulterError) {
-            return res.status(500).json({ error: 'File upload error' });
-        } else if (error) {
-            return res.status(500).json({ error: error.message })
-        }
-    })
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
     const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity,ProductImage } = req.body;
 
     try {
@@ -54,7 +13,7 @@ export const insertProduct = async (req, res) => {
         }
 
         //upload to cloudinary
-        const imageUrl = await cloudinary.uploader.upload(ProductImage,{
+        const result = await cloudinary.uploader.upload(ProductImage, {
             folder: 'products'
         })
         const existingProduct = await Product.findOne({ where: { ProductName } });
@@ -69,8 +28,8 @@ export const insertProduct = async (req, res) => {
             ProductCategory,
             SubCategory,
             ProductImage: {
-                public_id: imageUrl.public_id,
-                url: imageUrl.secure_url
+                public_id: result.public_id,
+                url: result.secure_url
             },
             Quantity,
         });
