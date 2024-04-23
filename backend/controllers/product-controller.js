@@ -1,20 +1,46 @@
+import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
 import cloudinaryV2 from './cloudinary.js';
 
+// Set up multer storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  });
+
+  // Create the multer instance with the storage configuration
+const upload = multer({ storage: storage }).single('ProductImage');
+
+// Middleware function to handle file uploads
+export const uploadImage = (req, res, next) => {
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            return res.status(400).json({ message: 'File upload error' });
+        } else if (err) {
+            return res.status(500).json({ message: err.message });
+        }
+        next();
+    });
+};
+
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
-    const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity, ProductImage } = req.body;
-
     try {
+        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
+        const ProductImage = req.file;
         // Check if all required fields are provided
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || !ProductImage) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity ) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
 
         // Upload image to Cloudinary
-        const cloudinaryResponse = await cloudinaryV2.uploader.upload(ProductImage, {
+        const cloudinaryResponse = await cloudinaryV2.uploader.upload(ProductImage.path, {
             folder: 'products'
         });
         if (!cloudinaryResponse) {
