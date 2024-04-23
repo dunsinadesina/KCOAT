@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
-import cloudinary from './cloudinary.js';
+import cloudinaryV2 from './cloudinary.js';
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
@@ -13,7 +13,7 @@ export const insertProduct = async (req, res) => {
         }
 
         //upload to cloudinary
-        const result = await cloudinary.uploader.upload(ProductImage, {
+        const result = await cloudinaryV2.uploader.upload(ProductImage, {
             folder: 'products'
         })
         const existingProduct = await Product.findOne({ where: { ProductName } });
