@@ -1,40 +1,7 @@
-import { v2 as cloudinaryV2 } from 'cloudinary';
-import multer from 'multer';
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
-
-// Configure Cloudinary v2
-cloudinaryV2.config({
-    cloud_name: 'dcqybedxj',
-    api_key: '732766964563482',
-    api_secret: 's7pTrfa-sme1oMHlf0ERlbUVoUw'
-});
-
-// Set up multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
-
-// Create the multer instance with the storage configuration
-const upload = multer({ storage: storage }).single('ProductImage');
-
-// Middleware function to handle file uploads
-export const uploadImage = (req, res, next) => {
-    upload(req, res, function (err) {
-        if (err instanceof multer.MulterError) {
-            return res.status(400).json({ message: 'File upload error' });
-        } else if (err) {
-            return res.status(500).json({ message: err.message });
-        }
-        next();
-    });
-};
+import cloudinaryV2 from './cloudinary.js';
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
@@ -47,40 +14,30 @@ export const insertProduct = async (req, res) => {
         }
 
         // Upload image to Cloudinary
-        const cloudinaryResponse = await cloudinaryV2.uploader.upload(ProductImage.path, {
-            folder: 'products'
-        });
-        if (!cloudinaryResponse) {
-            console.log('Error uploading to cloudinary');
-            return res.status(401).json({ message: 'Error uploading image to Cloudinary' });
+        if (ProductImage) {
+            const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage, {
+                upload_preset: 'joznqvva',
+                folder: 'products'
+            });
+            if (uploadResponse) {
+                const product = new Product({
+                    ProductName,
+                    ProductPrice,
+                    ProductDescription,
+                    ProductCategory,
+                    SubCategory,
+                    Quantity,
+                    ProductImage: uploadResponse
+                })
+                const savedProduct = await product.save();
+                res.status(200).send(savedProduct);
+            }
         }
-        // Check if a product with the same name already exists
-        const existingProduct = await Product.findOne({ where: { ProductName } });
-        if (existingProduct) {
-            return res.status(400).json({ message: 'Product with the same name already exists' });
-        }
-
-        // Create new product record using the product model
-        const newProduct = await Product.create({
-            ProductName,
-            ProductPrice,
-            ProductDescription,
-            ProductCategory,
-            SubCategory,
-            Quantity,
-            ProductImage: {
-                public_id: cloudinaryResponse.public_id,
-                url: cloudinaryResponse.secure_url
-            },
-        });
-
-        console.log("New product created");
-        return res.status(201).json({ message: 'New Product created', result: newProduct });
     } catch (error) {
-        console.error("Error inserting product:", error); // Log the error
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-};
+        console.log("Error in creating product: ", error);
+        res.status(500).send(error);
+    };
+
 //function to get all products from database
 export const getAllProducts = async (req, res) => {
     try {
