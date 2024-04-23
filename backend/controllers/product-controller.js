@@ -41,8 +41,8 @@ export const insertProduct = async (req, res) => {
         console.log("New product created");
         return res.status(201).json({ message: 'New Product created', result: newProduct });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: 'Internal Server Error', error });
+        console.error("Error inserting product:", error); // Log the error
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 //function to get all products from database
