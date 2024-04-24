@@ -1,25 +1,22 @@
 import { Op } from 'sequelize';
 import { sequelize } from '../config/connection.js';
 import { Product } from '../model/products.js';
-import cloudinaryV2 from './cloudinary.js';
 
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
     try {
-        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
-        const ProductImage = req.file;
+        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity, ProductImage } = req.body;
         // Check if all required fields are provided
-        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
+        if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity || !ProductImage) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
 
-        // Upload image to Cloudinary
-        if (ProductImage) {
-            const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage, {
-                upload_preset: 'joznqvva',
-                folder: 'products'
-            });
-            if (uploadResponse) {
+        // // Upload image to Cloudinary
+        // if (ProductImage) {
+        //     const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage, {
+        //         upload_preset: 'joznqvva',
+        //         folder: 'products'
+        //     });
                 const product = new Product({
                     ProductName,
                     ProductPrice,
@@ -27,13 +24,11 @@ export const insertProduct = async (req, res) => {
                     ProductCategory,
                     SubCategory,
                     Quantity,
-                    ProductImage: uploadResponse
-                })
+                    ProductImage
+                });
                 const savedProduct = await product.save();
                 res.status(200).send(savedProduct);
-            }
-        }
-    } catch (error) {
+        } catch (error) {
         console.log("Error in creating product: ", error);
         res.status(500).send(error);
     }
