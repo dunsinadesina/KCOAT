@@ -10,6 +10,7 @@ import { deleteProduct, getAllProducts, getMostPopularProducts, getNewAndFeature
 import { forgotPassword, resetPassword } from '../backend/controllers/resetPassword.js';
 import { getAllUserProfiles, getUserProfile, updateUserProfile } from '../backend/controllers/userProfilecontroller.js';
 import { sanitizeProductFields } from '../backend/middleware/auth.js';
+import upload from '../backend/middleware/multer.js';
 import { mid } from '../backend/middleware/mwd.js';
 // Define routes
 // router.get('/', home)
@@ -19,7 +20,7 @@ router.post('/logout', logout)
 router.post('/register', insertCus)
 router.post('/verify-email', verifyEmail)
 router.post('/forgot-password', forgotPassword)
-router.post('/products', sanitizeProductFields, insertProduct)
+router.post('/products',upload.single('ProductImage'), sanitizeProductFields, insertProduct)
 router.get('/products', getAllProducts)
 router.get('/products/:Productid', getProductById)
 router.get('/products/category/:category', getProductByCategory);
