@@ -27,7 +27,7 @@ export const insertProduct = async (req, res) => {
                     ProductCategory,
                     SubCategory,
                     Quantity,
-                    ProductImage: uploadResponse
+                    ProductImage: uploadResponse.secure_url
                 })
                 const savedProduct = await product.save();
                 res.status(200).send(savedProduct);
