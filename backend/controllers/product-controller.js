@@ -15,7 +15,7 @@ export const insertProduct = async (req, res) => {
         const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage, {
             upload_preset: "kcoatstyle"
         })
-        const imageUrl = uploadResponse.secure_url;
+        let imageUrl = uploadResponse.secure_url;
         const product = new Product({
             ProductName,
             ProductPrice,

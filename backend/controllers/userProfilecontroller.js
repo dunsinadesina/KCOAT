@@ -1,22 +1,12 @@
 import fs from 'fs';
-import multer from 'multer';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 import { UserProfile } from '../model/userprofile.js';
+import cloudinaryV2 from './cloudinary.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const defaultAvatarPath = join(__dirname, 'default_image.jpeg')
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+const uploadResponse = await cloudinaryV2.uploader.upload(image, {
+    upload_preset: "kcoatstyle"
+})
+const defaultAvatarPath = 'backend/controllers/default_image.jpeg';
+let imageUrl = uploadResponse.secure_url;
 
 const upload = multer({ storage: storage }).single('image');
 
@@ -72,7 +62,7 @@ export const updateUserProfile = async (req, res) => {
             country: req.body.country,
             newPassword: req.body.newPassword,
             phoneNumber: req.body.phoneNumber,
-            image: req.file ? req.file.path : defaultAvatarPath
+            image: imageUrl
         }
         try {
             const userProfile = await UserProfile.findOne({
