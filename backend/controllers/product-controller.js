@@ -12,7 +12,6 @@ export const insertProduct = async (req, res) => {
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
         }
-
         // Upload image to Cloudinary
         const imageUrl = cloudinaryV2.uploader.unsigned_image_upload_tag(ProductImage.path, "kcoatstyle")
         const product = new Product({
@@ -30,7 +29,7 @@ export const insertProduct = async (req, res) => {
         console.log("Error in creating product: ", error);
         res.status(500).send(error);
     }
-
+}
 
     //function to get all products from database
     export const getAllProducts = async (req, res) => {
