@@ -6,7 +6,7 @@ import cloudinaryV2 from './cloudinary.js';
 //Define the function to insert new Product
 export const insertProduct = async (req, res) => {
     try {
-        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity } = req.body;
+        const { ProductName, ProductPrice, ProductDescription, ProductCategory, SubCategory, Quantity, ProductImage } = req.body;
         // Check if all required fields are provided
         if (!ProductName || !ProductPrice || !ProductDescription || !ProductCategory || !SubCategory || !Quantity) {
             return res.status(400).json({ message: "Fill in all fields" });
