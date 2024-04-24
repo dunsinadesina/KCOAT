@@ -37,5 +37,5 @@ const Product = sequelize.define("Products", {
         allowNull: true
     }
 })
-Product.sync();
+
 export { Product };
