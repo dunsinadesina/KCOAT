@@ -3,9 +3,6 @@ import cloudinaryV2 from './cloudinary.js';
 
 
 const defaultAvatarPath = 'backend/controllers/default_image.jpeg';
-let imageUrl = uploadResponse.secure_url;
-
-const upload = multer({ storage: storage }).single('image');
 
 export const getAllUserProfiles = async (req, res) => {
     try {
