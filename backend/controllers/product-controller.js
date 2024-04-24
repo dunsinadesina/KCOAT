@@ -14,7 +14,7 @@ export const insertProduct = async (req, res) => {
         }
         // Upload image to Cloudinary
         const imageUrl = await cloudinaryV2.uploader.upload(ProductImage.path, {
-            upload_preset: "kocatstyle"
+            upload_preset: "kcoatstyle"
         })
         const product = new Product({
             ProductName,
