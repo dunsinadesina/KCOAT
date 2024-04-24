@@ -13,7 +13,7 @@ export const insertProduct = async (req, res) => {
             return res.status(400).json({ message: "Fill in all fields" });
         }
         // Upload image to Cloudinary
-        const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage.path, {
+        const uploadResponse = await cloudinaryV2.uploader.upload(ProductImage, {
             upload_preset: "kcoatstyle"
         })
         const imageUrl = uploadResponse.secure_url;
