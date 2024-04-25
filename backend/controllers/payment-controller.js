@@ -90,7 +90,7 @@ export const checkoutPayment = async (req, res) => {
         //     deliveryDate: req.body.deliveryDate
         // });
 
-        await sendOrderConfirmationMail(email, session.id);
+        await sendOrderConfirmationMail(email);
 
         res.send({ url: session.url });
     } catch (error) {
