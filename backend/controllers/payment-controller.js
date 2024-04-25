@@ -89,13 +89,11 @@ export const checkoutPayment = async (req, res) => {
         //     deliveryAddress: req.body.deliveryAddress,
         //     deliveryDate: req.body.deliveryDate
         // });
-       
 
-        
-        res.send({ url: session.url });
-        await session.whenComplete;
         console.log('Recipient email:', email);
         await sendOrderConfirmationMail(email);
+        res.send({ url: session.url });
+        
     } catch (error) {
         console.log('Payment error: ', error);
         res.status(500).json({ message: 'An error occurred during payment', error });
