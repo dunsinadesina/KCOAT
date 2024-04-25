@@ -2,8 +2,6 @@ import { UserProfile } from '../model/userprofile.js';
 import cloudinaryV2 from './cloudinary.js';
 
 
-const defaultAvatarPath = 'backend/controllers/default_image.jpeg';
-
 export const getAllUserProfiles = async (req, res) => {
     try {
         const userProfiles = await UserProfile.findAll();
@@ -26,7 +24,6 @@ export const getUserProfile = async (req, res) => {
             if (!userProfile.image) {
                 userProfile.image = defaultAvatarPath;
             }
-            console.log(defaultAvatarPath);
             res.status(200).json(userProfile);
         } else {
             console.log('User profile not found');
