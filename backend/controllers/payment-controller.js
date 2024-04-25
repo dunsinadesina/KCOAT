@@ -89,6 +89,7 @@ export const checkoutPayment = async (req, res) => {
         //     deliveryAddress: req.body.deliveryAddress,
         //     deliveryDate: req.body.deliveryDate
         // });
+        console.log('Recipient email:', email);
         await sendOrderConfirmationMail(email);
 
         
