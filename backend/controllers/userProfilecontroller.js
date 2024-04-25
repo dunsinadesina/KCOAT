@@ -39,25 +39,24 @@ export const getUserProfile = async (req, res) => {
 }
 
 export const updateUserProfile = async (req, res) => {
-    // Call the upload middleware to handle file upload
-    const { firstName, lastName, address, state, email, country, newPassword, phoneNumber, image } = req.body;
-    const uploadResponse = await cloudinaryV2.uploader.upload(image, {
-        upload_preset: "kcoatstyle"
-    })
-    const imageUrl = uploadResponse.secure_url;
-    const { cusid } = req.params;
-    const updatedUserData = {
-        firstName,
-        lastName,
-        address,
-        state,
-        email,
-        country,
-        newPassword,
-        phoneNumber,
-        image: imageUrl
-    }
     try {
+        const { firstName, lastName, address, state, email, country, newPassword, phoneNumber, image } = req.body;
+        const uploadResponse = await cloudinaryV2.uploader.upload(image, {
+            upload_preset: "kcoatstyle"
+        })
+        let imageUrl = uploadResponse.secure_url;
+        const { cusid } = req.params;
+        const updatedUserData = {
+            firstName,
+            lastName,
+            address,
+            state,
+            email,
+            country,
+            newPassword,
+            phoneNumber,
+            image: imageUrl
+        }
         const userProfile = await UserProfile.findOne({
             where: {
                 customerId: cusid
