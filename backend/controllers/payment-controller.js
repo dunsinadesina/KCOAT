@@ -75,11 +75,11 @@ export const checkoutPayment = async (req, res) => {
             mode: 'payment',
             success_url: 'https://kcoat.netlify.app/payment-success',
             cancel_url: 'https://kcoat.netlify.app/checkout',
-            metadata:{
+            metadata: {
                 user: stripeCustomerId,
             }
         });
-       // const customerId = session.metadata.customerId;
+        // const customerId = session.metadata.customerId;
 
         //Store payment information in the database
         // await Payment.create({
@@ -90,10 +90,11 @@ export const checkoutPayment = async (req, res) => {
         //     deliveryDate: req.body.deliveryDate
         // });
 
-        console.log('Recipient email:', email);
-        await sendOrderConfirmationMail(email);
+
         res.send({ url: session.url });
-        
+        console.log('Recipient email:', email);
+        sendOrderConfirmationMail(email);
+
     } catch (error) {
         console.log('Payment error: ', error);
         res.status(500).json({ message: 'An error occurred during payment', error });
