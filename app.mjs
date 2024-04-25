@@ -4,7 +4,9 @@ import express from 'express';
 import { router } from './routes/rts.js';
 const app = express();
 // Set up middleware and routes
-app.use(cors());
+app.use(cors({
+    origin: 'https://kcoat.netlify.app'
+}));
 //app.use(cookieParser());
 app.use(express.static('public'));
 //app.use(admin.options.rootPath, adminRouter);
