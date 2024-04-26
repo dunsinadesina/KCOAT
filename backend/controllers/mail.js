@@ -37,12 +37,12 @@ export const sendVerificationMail = (user) => {
 export const sendOrderConfirmationMail = async (customerEmail, cartItems) => {
     try {
         const transporter = createMailTransporter();
-        const formattedCartItems = cartItems.map(item => `${item.quantity} x ${item.productName}`).join(', ');
+        const formattedCartItems = cartItems.map(item => `Quantity: ${item.quantity}, Product Name: ${item.productName}`).join(', ');
         const mailOptions = {
             from: 'KCOAT <kcoatstyle@outlook.com>',
             to: customerEmail,
             subject: 'Order Confirmation',
-            html: `<p>Thank you for your order!😊 Your order of has been confirmed.</p> <p>Order Details: ${formattedCartItems}</p>`
+            html: `<p>Thank you for your order!😊 Your order has been confirmed.</p> <p>Order Details: ${formattedCartItems}</p>`
         };
 
         let info = await transporter.sendMail(mailOptions);
