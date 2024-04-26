@@ -93,7 +93,7 @@ export const checkoutPayment = async (req, res) => {
 
         res.send({ url: session.url });
         console.log('Recipient email:', email);
-        await sendOrderConfirmationMail(email);
+        await sendOrderConfirmationMail(email, cartItems);
 
     } catch (error) {
         console.log('Payment error: ', error);
