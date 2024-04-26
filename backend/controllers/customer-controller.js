@@ -47,7 +47,7 @@ export const insertCus = async (req, res) => {
             state: ' ',
             country: ' ',
             address: ' ',
-            image,
+            image: ' ',
         });
         return res.status(200).json({
             message: 'Customer and User Profile created successfully',
