@@ -20,9 +20,6 @@ export const getUserProfile = async (req, res) => {
             }
         });
         if (userProfile) {
-            if (!userProfile.image) {
-                userProfile.image = defaultAvatarPath;
-            }
             res.status(200).json(userProfile);
         } else {
             console.log('User profile not found');
