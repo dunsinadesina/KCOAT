@@ -1,5 +1,4 @@
 import { UserProfile } from '../model/userprofile.js';
-import cloudinaryV2 from './cloudinary.js';
 
 export const getAllUserProfiles = async (req, res) => {
     try {
@@ -34,30 +33,24 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
     const { cusid } = req.params;
     try {
-        const { firstName, lastName, address, state, email, country, newPassword, phoneNumber, image } = req.body;
-        console.log('Request body: ', req.body);
+        const { firstName, lastName, address, state, email, country, newPassword, phoneNumber } = req.body;
+        const updatedUserData = {
+            firstName,
+            lastName,
+            address,
+            state,
+            email,
+            country,
+            newPassword,
+            phoneNumber,
+            image
+        };
+        console.log('Updated User Data: ', updatedUserData);
         const userProfile = await UserProfile.findOne({
             where: {
                 customerId: cusid
             }
         });
-        const uploadResponse = await cloudinaryV2.uploader.upload(image, {
-            upload_preset: "kcoatstyle"
-        })
-        let imageUrl = uploadResponse.secure_url;
-        console.log('Image URL: ', imageUrl)
-    
-            userProfile.firstName = firstName;
-            userProfile.lastName = lastName;
-            userProfile.address = address;
-            userProfile.state = state;
-            userProfile.email = email;
-            userProfile.country = country;
-            userProfile.newPassword = newPassword;
-            userProfile.phoneNumber = phoneNumber;
-            userProfile.image = imageUrl;
-        await userProfile.save();
-        
         console.log("User Profile: ", userProfile);
         if (!userProfile) {
             return res.status(404).json({ error: 'User not found' });
