@@ -43,7 +43,7 @@ export const insertCus = async (req, res) => {
             lastName,
             email,
             customerId: newCustomer.cusid,
-            phoneNumber: 0,
+            phoneNumber,
             state,
             country,
             address,
