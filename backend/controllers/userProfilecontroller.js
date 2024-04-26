@@ -1,7 +1,6 @@
 import { UserProfile } from '../model/userprofile.js';
 import cloudinaryV2 from './cloudinary.js';
 
-
 export const getAllUserProfiles = async (req, res) => {
     try {
         const userProfiles = await UserProfile.findAll();
@@ -39,10 +38,12 @@ export const updateUserProfile = async (req, res) => {
     const { cusid } = req.params;
     try {
         const { firstName, lastName, address, state, email, country, newPassword, phoneNumber, image } = req.body;
+        console.log('Request body: ', req.body);
         const uploadResponse = await cloudinaryV2.uploader.upload(image, {
             upload_preset: "kcoatstyle"
         })
         let imageUrl = uploadResponse.secure_url;
+        console.log('Image URL: ', imageUrl)
         const updatedUserData = {
             firstName,
             lastName,
@@ -53,17 +54,19 @@ export const updateUserProfile = async (req, res) => {
             newPassword,
             phoneNumber,
             image: imageUrl
-        }
+        };
+        console.log('Updated User Data: ', updatedUserData);
         const userProfile = await UserProfile.findOne({
             where: {
                 customerId: cusid
             }
         });
+        console.log("User Profile: ", userProfile);
         if (!userProfile) {
             return res.status(404).json({ error: 'User not found' });
         }
         await userProfile.update(updatedUserData);
-        res.status(200).json(updatedUserData);
+        res.status(200).json(userProfile);
     } catch (error) {
         console.log('Error updating user information', error);
         res.status(500).json({ error: 'Error updating customer information' });
