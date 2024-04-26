@@ -42,8 +42,7 @@ export const updateUserProfile = async (req, res) => {
             email,
             country,
             newPassword,
-            phoneNumber,
-            image
+            phoneNumber
         };
         console.log('Updated User Data: ', updatedUserData);
         const userProfile = await UserProfile.findOne({
