@@ -8,6 +8,7 @@ const createMailTransporter = () => {
             user: 'kcoatstyle@outlook.com',
             pass: 'kcoatkcoat12',
         },
+        from: 'kcoatstyle@outlook.com'
     });
     return transporter;
 }
