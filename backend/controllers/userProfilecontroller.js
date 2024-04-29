@@ -1,4 +1,5 @@
 import { UserProfile } from '../model/userprofile.js';
+import cloudinaryV2 from './cloudinary.js';
 
 export const getAllUserProfiles = async (req, res) => {
     try {
@@ -33,7 +34,12 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
     const { cusid } = req.params;
     try {
-        const { firstName, lastName, address, state, email, country, newPassword, phoneNumber } = req.body;
+        const { firstName, lastName, address, state, email, country, newPassword, phoneNumber, image } = req.body;
+
+        const uploadResponse = await cloudinaryV2.uploader.upload(image,{
+            upload_preset: "kcoatstyle"
+        });
+        let imageUrl = uploadResponse.secure_url;
         const updatedUserData = {
             firstName,
             lastName,
@@ -42,7 +48,8 @@ export const updateUserProfile = async (req, res) => {
             email,
             country,
             newPassword,
-            phoneNumber
+            phoneNumber,
+            image: imageUrl
         };
         console.log('Updated User Data: ', updatedUserData);
         const userProfile = await UserProfile.findOne({
