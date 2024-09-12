@@ -14,4 +14,3 @@ app.use('/', router);
 app.listen(6000, () => {
     console.log(`SERVER RUNNING, Server started on https://kcoat.onrender.com`);
 });
-//}
