@@ -30,4 +30,4 @@ export const adminLogin = async (req, res) => {
         console.error('Error registering admin:', error);
         return res.status(500).json({ message: 'An error occurred while registering admin' });
     }
-};
+}
