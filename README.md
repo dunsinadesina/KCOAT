@@ -2,8 +2,8 @@
 
 ## Author - Adesina Jesudunsin
 
-# INTRODUCTION
-This is the documentation for KCOAT backend. You can find the deployed site here "https://kcoat.netlify.app/" and the final project article here "https://www.linkedin.com/posts/jesudunsin-adesina_kcoat-my-journey-in-building-a-fashion-e-commerce-activity-7206620052517703680-txBu?utm_source=share&utm_medium=member_desktop"
+<!-- # INTRODUCTION
+This is the documentation for KCOAT backend. You can find the deployed site here "https://kcoat.netlify.app/" and the final project article here "https://www.linkedin.com/posts/jesudunsin-adesina_kcoat-my-journey-in-building-a-fashion-e-commerce-activity-7206620052517703680-txBu?utm_source=share&utm_medium=member_desktop" -->
 
 ## Author's LinkedIn: www.linkedin.com/in/jesudunsin-adesina
 
