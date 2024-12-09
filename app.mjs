@@ -14,3 +14,15 @@ app.use('/', router);
 app.listen(6000, () => {
     console.log(`SERVER RUNNING, Server started on https://kcoat.onrender.com`);
 });
+
+import models from './backend/model/index.js';
+import { sequelize } from './backend/config/connection.js';
+
+// Sync all models
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log("All models were synchronized successfully.");
+    })
+    .catch((err) => {
+        console.error("Error synchronizing models:", err);
+    });
