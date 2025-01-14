@@ -12,11 +12,13 @@ export const adminLogin = async (req, res) => {
             console.log('Fill all fields');
             return res.status(400).json({ message: 'Fill all fields' });
         }
+        // Find admin by email
         const admin = await Admin.findOne({ where: { email } });
         if (!admin) {
             console.log('Admin not found');
             return res.status(404).json({ message: 'Admin not found' });
         }
+        // Compare passwords
         const passwordMatch = await bcrypt.compare(password, admin.password);
         if (!passwordMatch) {
             console.log("Wrong password");
