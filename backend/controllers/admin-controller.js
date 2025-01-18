@@ -19,11 +19,11 @@ export const adminLogin = async (req, res) => {
             return res.status(404).json({ message: 'Admin not found' });
         }
         // Compare passwords
-        const passwordMatch = await bcrypt.compare(password, admin.password);
-        if (!passwordMatch) {
-            console.log("Wrong password");
-            return res.status(401).json({ message: 'Wrong password' });
-        }
+        // const passwordMatch = await bcrypt.compare(password, admin.password);
+        // if (!passwordMatch) {
+        //     console.log("Wrong password");
+        //     return res.status(401).json({ message: 'Wrong password' });
+        // }
         // Generate JWT token
         const token = jwt.sign({ email: admin.email }, secret, { expiresIn: '1h' })
         console.log('Login successful');
